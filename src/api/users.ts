@@ -11,10 +11,10 @@ const usersApi = {
             callback(response.data)
     },
 
-    async authentificate(login :string, password: string, callback: ((data: any) => void) | undefined) {
+    async getToken(login :string, password: string, callback: ((data: any) => void) | undefined) {
         const response = await axiosInstance({
             method: 'post',
-            url: 'auth/login',
+            url: 'auth/token',
             data: {
                 login: login,
                 password: password,

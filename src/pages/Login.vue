@@ -14,7 +14,7 @@
   })
 
   function onLogin(){
-    usersApi.authentificate(form.value.login, form.value.password,
+    usersApi.getToken(form.value.login, form.value.password,
       data => {
         auth.setAccessToken(data.access_token);
 

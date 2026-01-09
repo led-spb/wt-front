@@ -45,7 +45,7 @@ router.beforeEach(async (to, from) => {
     }
 
     if( auth.isAuthentificated && to.name == 'login'){
-        return {name: 'default'}
+        return {name: 'about'}
     }
 })
 
