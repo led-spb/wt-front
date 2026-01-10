@@ -27,6 +27,19 @@
         return true
     })
 
+    const resultWord = computed(() => {
+        const result = [];
+        for (const letter of letters.value) {
+            if( typeof(letter) == 'string' ){
+                result.push(letter)
+            }else{
+                result.push(letter.selected)
+            }
+            
+        }
+        return result.join('')
+    })
+
     function mapVariantChars(value: string): string{
         const replaced = encodeSpaces(value)
         return replaced == "" ? " " : replaced
@@ -34,9 +47,8 @@
 
     function selectVariant(item: any, variant: string){
         item.selected = variant.replace("_","")
-
         if( isDone.value ){
-            if( resultWord() == model.value.fullword )
+            if( resultWord.value == model.value.fullword )
                 emit('onRight')
             else
                 emit('onWrong')
@@ -48,14 +60,6 @@
     }
     function isSpellingOk(spelling: any): Boolean{
         return spelling.selected == getSpellingRight(spelling)
-    }
-
-    function resultWord(): string|undefined{
-        const result = [];
-        for (const letter of letters.value) {
-            result.push(letter.selected);
-        }
-        return result.join('')
     }
 
     function encodeSpaces(value: any): any {
@@ -76,13 +80,12 @@
 
 
 <template>
-
     <div class="word-block">
         <template v-if="isDone">
 
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
-                    <h2 class="letter">{{ item }}</h2>
+                    <h2 class="letter">{{ encodeSpaces(item) }}</h2>
                 </template>
                 <template v-else>
                     <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
@@ -104,7 +107,7 @@
 
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
-                    <h2 class="letter">{{ item }}</h2>
+                    <h2 class="letter">{{ encodeSpaces(item) }}</h2>
                 </template>
 
                 <template v-else>

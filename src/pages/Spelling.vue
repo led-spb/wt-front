@@ -6,33 +6,55 @@
 
     import { usersApi } from '@/api/users';
 
+    const inProcess = ref(true);
+    const isSuccess = ref();
+
     const words = useWordsStore();
     const stats = useStatsStore();
 
-    function onRightAnswer(){
-        stats.incRight()
-        usersApi.sendUserStat([words.currentWord['id']], [])
+    var timeoutId = -1;
+
+    function processAnswer(success: boolean){
+        isSuccess.value = success
+        if( success ){
+            stats.incRight()
+            usersApi.sendUserStat([words.currentWord['id']], [])
+        }else{
+            stats.incWrong()
+            usersApi.sendUserStat([], [words.currentWord['id']])
+        }
+        inProcess.value = false
+
+        timeoutId = setTimeout(() => nextWord(), 3000)
     }
 
-    function onWrongAnswer(){
-        stats.incWrong()
-        usersApi.sendUserStat([], [words.currentWord['id']])
+    function nextWord(){
+        clearTimeout(timeoutId)
+        inProcess.value = true;
+        words.nextWord();
     }
 
-    onMounted(() => { words.nextWord() });
+    onMounted(() => { nextWord() });
 </script>
 
 <template>
-        <va-card class="align-center">
+    <div class="row justify-center">
+        <va-card stripe :stripe-color='inProcess?"secondary":isSuccess?"success":"danger"' class="flex flex-col">
             <va-card-title>Орфограммы/Словарные слова</va-card-title>
             <va-card-content>
                 <spelling-exam
                     v-model="words.currentWord" v-if="words.currentWord"
-                    v-on:on-right="onRightAnswer()" v-on:on-wrong="onWrongAnswer()">
+                    v-on:on-right="processAnswer(true)" v-on:on-wrong="processAnswer(false)">
                 </spelling-exam>
-                <va-button preset="primary" icon-right="arrow_forward" v-on:click="words.nextWord()">Дальше</va-button>
+                <div class="va-text-block" v-if="!!words.currentWord?.context">
+                    <span>{{ words.currentWord?.context }}</span>
+                </div>
+                <va-divider/>
+
+                <va-button :disabled="inProcess" class="primary" icon-right="arrow_forward" v-on:click="nextWord()">Дальше</va-button>
             </va-card-content>
         </va-card>
+    </div>
 </template>
 
 <style scoped>
