@@ -147,7 +147,7 @@
     }
     .variant {
         padding: 0 2px;
-        font-size: 30px;
+        font-size: 35px;
         cursor: pointer;
         border: 1px solid;
         border-radius: 5px;

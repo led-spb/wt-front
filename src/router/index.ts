@@ -12,13 +12,14 @@ const router = createRouter({
             children: [
                 {   path: '',
                     name: 'home',
-                    component: () => import('@/pages/Home.vue')
+                    component: () => import('@/pages/Home.vue'),
+                    meta: { requiresAuth: true },
                 },
                 {
                     path: 'spelling',
                     name: 'spelling',
                     component: () => import('@/pages/Spelling.vue'),
-                    meta: { requiresAuth: true }
+                    meta: { requiresAuth: true },
                 },
                 {
                     path: 'login',

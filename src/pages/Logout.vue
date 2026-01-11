@@ -4,13 +4,13 @@
     import { useRouter } from 'vue-router';
     import { useModal } from 'vuestic-ui';
 
+    const router = useRouter()
 
     onMounted(() => {
         const { confirm } = useModal();
 
         confirm("Выйти из системы?")
             .then((ok) => {
-                const router = useRouter()
                 if( ok ){
                     useAuthStore().setAccessToken("")
                     router.push({name: 'login'})
