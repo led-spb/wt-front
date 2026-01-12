@@ -9,13 +9,15 @@
   const route = useRoute()
 
   const form = ref({
-    login: '',
+    login: localStorage.getItem('username') || '',
     password: ''
   })
 
   function onLogin(){
     usersApi.getToken(form.value.login, form.value.password,
       data => {
+        localStorage.setItem('username', form.value.login);
+        
         auth.setAccessToken(data.access_token);
 
         const redirectPath = route.query.redirect;

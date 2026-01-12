@@ -2,12 +2,13 @@
     import { ref, computed, onMounted } from 'vue';
     import { useAuthStore } from '@/stores';
     import {useRouter, useRoute} from 'vue-router'
-    import { useColors } from 'vuestic-ui';
+    import { useBreakpoint, useColors } from 'vuestic-ui';
 
     const showSidebar = ref(false)
     const auth = useAuthStore()
     const router = useRouter()
     const colorManager = useColors()
+    const breakpoints = useBreakpoint()
 
     const darkTheme = computed({
         get() {
@@ -49,7 +50,7 @@
 
 <template>
 
-<va-layout style="min-height: 100vh;" :left="{absolute: true}">
+<va-layout style="min-height: 100vh;" :left="{ absolute: breakpoints.smDown }">
         <template #top>
             <va-navbar color="primary" class="py-2">
                 <template #left>
