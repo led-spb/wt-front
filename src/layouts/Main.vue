@@ -56,7 +56,7 @@
                     <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar"/>
                 </template>
                 <template #center>
-                    <va-navbar-item class="font-bold text-lg">Тренажер слов</va-navbar-item>
+                    <va-navbar-item class="font-bold text-lg va-h5">Тренажер слов</va-navbar-item>
                 </template>
             </va-navbar>
         </template>
