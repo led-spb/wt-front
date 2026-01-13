@@ -1,36 +1,29 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed } from 'vue';
     import { useAuthStore, useUsersStore } from '@/stores';
-    import {useRouter, useRoute} from 'vue-router'
-    import { useBreakpoint, useColors } from 'vuestic-ui';
+    import { useRouter, useRoute} from 'vue-router'
+    import { useColors } from 'vuestic-ui';
 
     const showSidebar = ref(false)
     const auth = useAuthStore()
     const user = useUsersStore()
     const router = useRouter()
     const colorManager = useColors()
-    const breakpoints = useBreakpoint()
 
     const darkTheme = computed({
         get() {
             return colorManager.currentPresetName.value == 'dark'
         },
         set(value: boolean) {
-            colorManager.applyPreset(value?'dark':'light')
+            colorManager.applyPreset(value ? 'dark': 'light')
             localStorage.setItem('darkMode', JSON.stringify(value))
         }
-    })
-
-    onMounted(() =>{
-        const value = localStorage.getItem('darkMode') || 'false'
-        darkTheme.value = JSON.parse(value)
     })
 
     const links = [
         {name: 'Домой', route: 'home', icon: 'home', visible: () => auth.isAuthentificated},
         {name: 'Орфограммы', route: 'spelling', icon: 'format_color_text', visible: () => auth.isAuthentificated},
         {name: 'Вход', route: 'login', icon: 'login', visible: () => !auth.isAuthentificated},
-        // {name: 'Профиль', route: 'profile', visible: () => auth.isAuthentificated},
         {name: 'Выход', route: 'logout', icon: 'logout', visible: () => auth.isAuthentificated },
     ]
     const panelItems = computed( () => {

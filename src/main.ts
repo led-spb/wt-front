@@ -11,7 +11,13 @@ import router from '@/router'
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(createVuestic())
+app.use(createVuestic({
+    config: {
+        colors: {
+            currentPresetName: JSON.parse(localStorage.getItem('darkMode') || 'false') ? 'dark' : 'light'
+        }
+    }
+}))
 app.use(router)
 
 app.mount('#app')
