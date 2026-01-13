@@ -76,9 +76,9 @@
             <template v-else>
                 <va-form>
                     <va-slider label="Уровень" pins track-label-visible :min="1" :max="10" range v-model="taskParams.level"></va-slider>
-                    <div class="row" style="min-height: 2vh;"/>
+                    <div class="row" style="min-height: 2vh;"></div>
                     <va-slider label="Количество слов" pins track-label-visible :min="20" :max="50" :step="10" v-model="taskParams.count"></va-slider>
-                    <div class="row" style="min-height: 2vh;"/>
+                    <div class="row" style="min-height: 2vh;"></div>
                 </va-form>
                 <va-divider/>
                 <div class="row justify-center">
