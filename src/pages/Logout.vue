@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { useAuthStore } from '@/stores';
+    import { useAuthStore, useUsersStore } from '@/stores';
     import { onMounted } from 'vue';
     import { useRouter } from 'vue-router';
     import { useModal } from 'vuestic-ui';
@@ -13,6 +13,7 @@
             .then((ok) => {
                 if( ok ){
                     useAuthStore().setAccessToken("")
+                    useUsersStore().currentUser = undefined
                     router.push({name: 'login'})
                 }else{
                     router.back()

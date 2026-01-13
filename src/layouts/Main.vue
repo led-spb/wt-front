@@ -1,11 +1,12 @@
 <script setup lang="ts">
     import { ref, computed, onMounted } from 'vue';
-    import { useAuthStore } from '@/stores';
+    import { useAuthStore, useUsersStore } from '@/stores';
     import {useRouter, useRoute} from 'vue-router'
     import { useBreakpoint, useColors } from 'vuestic-ui';
 
     const showSidebar = ref(false)
     const auth = useAuthStore()
+    const user = useUsersStore()
     const router = useRouter()
     const colorManager = useColors()
     const breakpoints = useBreakpoint()
@@ -27,7 +28,7 @@
 
     const links = [
         {name: 'Домой', route: 'home', icon: 'home', visible: () => auth.isAuthentificated},
-        {name: 'Орфограммы', route: 'spelling', visible: () => auth.isAuthentificated},
+        {name: 'Орфограммы', route: 'spelling', icon: 'format_color_text', visible: () => auth.isAuthentificated},
         {name: 'Вход', route: 'login', icon: 'login', visible: () => !auth.isAuthentificated},
         // {name: 'Профиль', route: 'profile', visible: () => auth.isAuthentificated},
         {name: 'Выход', route: 'logout', icon: 'logout', visible: () => auth.isAuthentificated },
@@ -44,31 +45,26 @@
     function isLinkActive(link: any){
         return useRoute().name == link.route
     }
-
 </script>
 
 
 <template>
 
-    <va-layout style="min-height: 100vh;" :left="{ absolute: breakpoints.smDown }">
+    <va-layout style="min-height: 100vh;" :left="{ fixed: true }" :top="{ fixed: true }">
         <template #top>
-            <va-navbar color="primary" class="py-2">
-                <template #left>
-                    <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar"/>
-                </template>
-                <template #center>
-                    <va-navbar-item class="font-bold text-lg va-h5">Тренажер слов</va-navbar-item>
-                </template>
-            </va-navbar>
+            <va-app-bar top>
+                <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" style="margin-right: 10px;"/>
+                <va-navbar-item class="font-bold va-h6">Тренажер слов</va-navbar-item>
+                <va-spacer/>
+                <va-navbar-item style="margin-right: 10px;" v-if="user.currentUser">{{ user.currentUser.name  }}</va-navbar-item>
+            </va-app-bar>
         </template>
 
         <template #left>
 
             <va-sidebar v-model="showSidebar">
                 <va-sidebar-item v-for="(item, idx) in panelItems" 
-                    :active="isLinkActive(item)"
-                    @click="setLinkActive(item)"
-                >
+                    :active="isLinkActive(item)" @click="setLinkActive(item)">
                     <va-sidebar-item-content>
                         <va-icon :name="item.icon" v-if="item.icon"/>
                         <va-sidebar-item-title>{{ item.name }}</va-sidebar-item-title>
