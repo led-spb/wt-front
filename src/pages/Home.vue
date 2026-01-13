@@ -27,8 +27,7 @@
 
 
 <template>
-    <div class="row justify-center">
-        <va-card class="flex flex-col p-3">
+        <va-card class="item">
             <va-card-title>Статистика</va-card-title>
             <va-card-content>
                 <va-tabs vertical v-model="currentTab">
@@ -40,11 +39,11 @@
                 </va-card-content>
         </va-card>
 
-        <va-card class="flex flex-col"> 
+        <va-card class="item"> 
             <va-card-title>Топ ошибок</va-card-title>
             <va-card-content>
                     <div class="va-table-responsive">
-                            <table class="va-table">
+                            <table class="va-table" width="100%">
                             <thead>
                                 <tr>
                                 <th>Слово</th>
@@ -54,12 +53,11 @@
                             <tbody>
                                 <tr v-for="item in topFailed" :key="item.word.id">
                                 <td>{{ item.word.fullword }}</td>
-                                <td>{{ item.frequency }}</td>
+                                <td>{{ item.failed }}</td>
                                 </tr>
                             </tbody>
                             </table>
                     </div>   
             </va-card-content>                 
         </va-card>
-    </div>
 </template>

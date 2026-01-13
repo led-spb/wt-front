@@ -50,7 +50,7 @@
 
 <template>
 
-<va-layout style="min-height: 100vh;" :left="{ absolute: breakpoints.smDown }">
+    <va-layout style="min-height: 100vh;" :left="{ absolute: breakpoints.smDown }">
         <template #top>
             <va-navbar color="primary" class="py-2">
                 <template #left>
@@ -92,14 +92,15 @@
                         <va-sidebar-item-title>Настройки</va-sidebar-item-title>
                     </va-sidebar-item-content>
                 </va-sidebar-item>
-
             </va-sidebar>
 
         </template>
 
         <template #content>
-            <div class="row" style="min-height: 10vh;"/>
-            <router-view></router-view>
+            <div style="min-height: 5vh;"></div>
+            <div class="container">
+                <router-view></router-view>
+            </div>
         </template>
     </va-layout>
 
@@ -107,4 +108,22 @@
 
 
 <style scoped>
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        justify-content: space-evenly;
+        align-items: stretch;
+        align-content: center;
+
+        gap: 20px;
+    }
+</style>
+
+
+<style>
+    .item {
+        min-width: 360px;
+    }
 </style>

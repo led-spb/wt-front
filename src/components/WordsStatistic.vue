@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
+    import { computed } from 'vue';
 
     const model = defineModel(
         {type: Object}
@@ -22,7 +22,7 @@
 
 
 <template>
-    <va-list>
+    <va-list class="stat">
         <va-list-item>
             <va-list-item-section>
                 <va-list-item-label>Всего слов</va-list-item-label>
@@ -52,5 +52,8 @@
 </template>
 
 
-<style scoped>
+<style lang="scss">
+    .stat {
+        --va-list-item-label-color: "primary"
+    }
 </style>
