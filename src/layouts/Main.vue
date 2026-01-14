@@ -17,6 +17,7 @@
         set(value: boolean) {
             colorManager.applyPreset(value ? 'dark': 'light')
             localStorage.setItem('darkMode', JSON.stringify(value))
+            showSidebar.value = false
         }
     })
 
