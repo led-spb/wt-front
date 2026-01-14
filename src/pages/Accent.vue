@@ -4,7 +4,6 @@
     import { usersApi } from '@/api/users';
     import { useWordsStore } from '@/stores';
     import WordTask from '@/components/WordTask.vue';
-    import SpellingExam from '@/components/SpellingExam.vue';
 
     const statistics = ref({
         success: 0, failed: 0
@@ -18,7 +17,7 @@
     function startExam(){
         statistics.value = {success: 0, failed: 0}
 
-        wordsApi.getSpellingTask(task.value.count, task.value.level[0]||1, task.value.level[1]||10, (data) => {
+        wordsApi.getAccentTask(task.value.count, task.value.level[0]||1, task.value.level[1]||10, (data) => {
             words.setWords(data)
             words.nextWord()
         })
@@ -39,12 +38,12 @@
 
 <template>
     <word-task class="item"
-        title="Орфограммы/Словарные слова" 
+        title="Ударения" 
         v-model:statistics="statistics" 
-        v-model:word="words.currentWord" 
+        v-model:word="words.currentWord"
         v-model:task="task"
         @start="startExam" @next="words.nextWord" @complete="onCompleteWord">
-        <spelling-exam v-model="words.currentWord"></spelling-exam>
+        <!-- <spelling-exam v-model="words.currentWord"></spelling-exam> -->
     </word-task>
 </template>
 

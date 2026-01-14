@@ -13,7 +13,21 @@ const wordsApi = {
         })
         if (callback)
             callback(response.data)
-    }
+    },
+    async getAccentTask(count :Number, minLevel :Number, maxLevel :Number, callback: ((data: any) => void) | undefined){
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'accents/task',
+            params: {
+                count: count,
+                min: minLevel,
+                max: maxLevel,
+            }
+        })
+        if (callback)
+            callback(response.data)
+    },
+
 }
 
 export { wordsApi }

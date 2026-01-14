@@ -4,12 +4,12 @@
     const model = defineModel(
         {type: Object}
     );
-    const emit = defineEmits(['onRight', 'onWrong']);
+    const emit = defineEmits(['complete']);
 
     const letters = computed(() => {
         const word_letters = model.value.fullword.split('')
 
-        const spellings = [...model.value.spellings]
+        const spellings = [...model.value.spellings||[]]
         spellings.sort(
             (a, b) => {return b.position-a.position == 0 ? (b.length-a.length) : (b.position - a.position)}
         )
@@ -21,7 +21,7 @@
     });
 
     const isDone = computed(() =>{
-        for(const part of model.value.spellings)
+        for(const part of model.value.spellings || [])
             if( part.selected === undefined )
                 return false
         return true
@@ -48,10 +48,8 @@
     function selectVariant(item: any, variant: string){
         item.selected = variant.replace("_","")
         if( isDone.value ){
-            if( resultWord.value == model.value.fullword )
-                emit('onRight')
-            else
-                emit('onWrong')
+            model.value.result = resultWord.value == model.value.fullword
+            emit('complete', model.value.result )
         }
     }
 

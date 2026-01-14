@@ -1,15 +1,15 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { wordsApi } from '../api/words'
 
 
 export const useWordsStore = defineStore('words', () => {
-    const currentWord = ref()
+    const word = ref()
     const wordsBank = ref([])
 
     function nextWord() {
         const index = Math.trunc(Math.random()*wordsBank.value.length)
-        currentWord.value = wordsBank.value.splice(index, 1).pop()
+        word.value = wordsBank.value.splice(index, 1).pop()
     }
 
     function getWords(count: Number, minLevel :Number, maxLevel :Number){
@@ -19,5 +19,12 @@ export const useWordsStore = defineStore('words', () => {
         })
     }
 
-    return { currentWord, getWords, nextWord}
+    function setWords(values: Array<never>){
+        word.value = undefined
+        wordsBank.value = values
+    }
+
+    const currentWord = computed(() => word.value)
+
+    return { currentWord, getWords, nextWord, setWords }
 })
