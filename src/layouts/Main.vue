@@ -113,8 +113,18 @@
 </style>
 
 
-<style>
+<style lang="scss">
     .item {
         min-width: 360px;
     }
+
+    @media all and (max-width: 576px) {
+    .va-modal--mobile-fullscreen .va-modal__dialog {
+        margin: 0 !important;
+        min-width: 360px !important;
+        min-height: 0vh !important;
+        border-radius: 0;
+    }
+    }
+
 </style>

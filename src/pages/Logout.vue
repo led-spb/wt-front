@@ -6,19 +6,25 @@
 
     const router = useRouter()
 
-    onMounted(() => {
+    onMounted(async () => {
         const { confirm } = useModal();
 
-        confirm("Выйти из системы?")
-            .then((ok) => {
-                if( ok ){
-                    useAuthStore().setAccessToken("")
-                    useUsersStore().currentUser = undefined
-                    router.push({name: 'login'})
-                }else{
-                    router.back()
-                }
-            })
+        const result = await confirm({
+            message: "Выйти из системы?",
+            noDismiss: true,
+            maxWidth: "360px",
+            sizesConfig: 
+            {
+                 "defaultSize": "medium", 
+                 "sizes": { "small": 100, "medium": 300, "large": 200, "auto": "max-content" } }
+        });
+        if( result ){
+            useAuthStore().setAccessToken("")
+            useUsersStore().currentUser = undefined
+            router.push({name: 'login'})
+        }else{
+            router.back()
+        }
     })
 
 </script>
