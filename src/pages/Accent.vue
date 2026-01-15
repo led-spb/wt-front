@@ -4,6 +4,8 @@
     import { usersApi } from '@/api/users';
     import { useWordsStore } from '@/stores';
     import WordTask from '@/components/WordTask.vue';
+    import AccentExam from '@/components/AccentExam.vue';
+
 
     const statistics = ref({
         success: 0, failed: 0
@@ -43,7 +45,7 @@
         v-model:word="words.currentWord"
         v-model:task="task"
         @start="startExam" @next="words.nextWord" @complete="onCompleteWord">
-        <!-- <spelling-exam v-model="words.currentWord"></spelling-exam> -->
+        <accent-exam v-model="words.currentWord"></accent-exam>
     </word-task>
 </template>
 
