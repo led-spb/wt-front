@@ -6,6 +6,7 @@ import { usersApi } from '@/api/users'
 export const useUsersStore = defineStore('users', () => {
     const currentUser = ref()
     const currentUserStat = ref()
+    const rating = ref()
 
     function loadCurrentUser(){
         usersApi.getCurrentUser().then( data => {
@@ -18,6 +19,9 @@ export const useUsersStore = defineStore('users', () => {
                 return value
             } )
             currentUserStat.value = data
+        })
+        usersApi.getUserRating().then( data => {
+            rating.value = data
         })
     }
 
@@ -53,5 +57,5 @@ export const useUsersStore = defineStore('users', () => {
         }
     })
 
-    return { currentUser, currentUserStat, loadCurrentUser, dailyStats}
+    return { currentUser, currentUserStat, rating, loadCurrentUser, dailyStats}
 })

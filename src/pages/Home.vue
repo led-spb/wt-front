@@ -20,6 +20,10 @@
     })
     const currentTab = ref(0)
 
+    function displayPercent(item: any){
+        return (item.success + item.failed) == 0 ? 0 : Math.ceil(item.success / (item.success + item.failed) * 100)
+    }
+
     onMounted(() => {
         userStore.loadCurrentUser()
     })
@@ -42,22 +46,47 @@
         <va-card class="item"> 
             <va-card-title>Топ ошибок</va-card-title>
             <va-card-content>
-                    <div class="va-table-responsive">
-                            <table class="va-table" width="100%">
-                            <thead>
-                                <tr>
-                                <th>Слово</th>
-                                <th>Ошибок</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item in topFailed" :key="item.word.id">
-                                <td>{{ item.word.fullword }}</td>
-                                <td>{{ item.failed }}</td>
-                                </tr>
-                            </tbody>
-                            </table>
-                    </div>   
+                <div class="va-table-responsive">
+                        <table class="va-table" width="100%">
+                        <thead>
+                            <tr>
+                            <th>Слово</th>
+                            <th>Ошибок</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in topFailed" :key="item.word.id">
+                            <td>{{ item.word.fullword }}</td>
+                            <td>{{ item.failed }}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                </div>   
             </va-card-content>                 
         </va-card>
+
+        <va-card class="item">
+            <va-card-title>Рейтинг за месяц</va-card-title>
+            <va-card-content>
+                <div class="va-table-responsive">
+                        <table class="va-table" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Попыток</th>
+                                <th>% успешных</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in userStore.rating" :key="item.user.id">
+                            <td>{{ item.user.name }}</td>
+                            <td>{{ item.success + item.failed }}</td>
+                            <td>{{ displayPercent(item) }} %</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                </div>   
+            </va-card-content>
+        </va-card>
+
 </template>

@@ -35,6 +35,14 @@ const usersApi = {
         return response.data
     },
 
+    async getUserRating() {
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'user/rating'
+        })
+        return response.data
+    },
+
     sendUserStat(success: Array<Number>, failed: Array<Number> ){
         return axiosInstance({
             method: 'put',
