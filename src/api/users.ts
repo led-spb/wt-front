@@ -2,39 +2,41 @@ import { axiosInstance } from './config'
 
 const usersApi = {
 
-    async getCurrentUser(callback: ((data: any) => void) | undefined){
+    async getCurrentUser(){
         const response = await axiosInstance({
             method: 'get',
             url: 'user',
         })
-        if (callback)
-            callback(response.data)
+        return response.data
     },
 
-    async getToken(login :string, password: string, callback: ((data: any) => void) | undefined) {
+    async getToken(login :string, password: string ): Promise<any> {
         const response = await axiosInstance({
             method: 'post',
             url: 'auth/token',
             data: {
                 login: login,
                 password: password,
+            },
+            validateStatus: (status) => {
+                return status == 200 || status == 401
             }
         })
-        if (callback)
-            callback(response.data)
+        if( response.status == 401 )
+            throw "User unauthorized"
+        return response.data
     },
 
-    async getUserStat(callback: ((data: any) => void) | undefined) {
+    async getUserStat() {
         const response = await axiosInstance({
             method: 'get',
             url: 'user/stat',
         })
-        if (callback)
-            callback(response.data)
+        return response.data
     },
 
-    async sendUserStat(success: Array<Number>, failed: Array<Number> ){
-        await axiosInstance({
+    sendUserStat(success: Array<Number>, failed: Array<Number> ){
+        return axiosInstance({
             method: 'put',
             url: 'user/stat',
             data: {success: success, failed: failed}

@@ -1,34 +1,41 @@
 <script setup lang="ts">
-  import {ref} from 'vue'
-  import {useRouter, useRoute} from 'vue-router'
-  import {usersApi} from '@/api/users'
-  import {useAuthStore} from '@/stores';
+    import {ref} from 'vue'
+    import {useRouter, useRoute} from 'vue-router'
+    import {usersApi} from '@/api/users'
+    import {useAuthStore} from '@/stores';
+    import {useToast } from 'vuestic-ui';
 
-  const auth = useAuthStore()
-  const router = useRouter()
-  const route = useRoute()
+    const auth = useAuthStore()
+    const router = useRouter()
+    const route = useRoute()
+    const toastManager = useToast()
 
-  const form = ref({
-    login: localStorage.getItem('username') || '',
-    password: ''
-  })
+    const form = ref({
+        login: localStorage.getItem('username') || '',
+        password: ''
+    })
 
-  function onLogin(){
-    usersApi.getToken(form.value.login, form.value.password,
-      data => {
-        localStorage.setItem('username', form.value.login);
-        
-        auth.setAccessToken(data.access_token);
+    async function onLogin(){
+        usersApi.getToken(form.value.login, form.value.password)
+            .then((data) => {
+                localStorage.setItem('username', form.value.login)
+                auth.setAccessToken(data.access_token);
 
-        const redirectPath = route.query.redirect;
-        if( redirectPath ){
-            router.push({path: ""+redirectPath})
-        }else{
-            router.push({name: "home"})
-        }
-      }
-    )
-  }
+                const redirectPath = route.query.redirect;
+                if( redirectPath ){
+                    router.push({path: String(redirectPath)})
+                }else{
+                    router.push({name: "home"})
+                }
+            })
+            .catch((error) => {
+                toastManager.notify({
+                    message: 'Неверные логин/пароль',
+                    color: "warning",
+                })
+                console.log(error)
+            })
+    }
 </script>
 
 

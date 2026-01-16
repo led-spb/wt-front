@@ -19,10 +19,11 @@
     function startExam(){
         statistics.value = {success: 0, failed: 0}
 
-        wordsApi.getAccentTask(task.value.count, task.value.level[0]||1, task.value.level[1]||10, (data) => {
-            words.setWords(data)
-            words.nextWord()
-        })
+        wordsApi.getAccentTask(task.value.count, task.value.level[0]||1, task.value.level[1]||10)
+            .then( data => {
+                words.setWords(data)
+                words.nextWord()
+            })
     }
 
     function onCompleteWord(result: boolean){

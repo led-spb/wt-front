@@ -8,11 +8,11 @@ export const useUsersStore = defineStore('users', () => {
     const currentUserStat = ref()
 
     function loadCurrentUser(){
-        usersApi.getCurrentUser( data => {
+        usersApi.getCurrentUser().then( data => {
             currentUser.value = data
             localStorage.setItem('user', currentUser.value.name)
         })
-        usersApi.getUserStat( data => {
+        usersApi.getUserStat().then( data => {
             data.days = data.days.map( (value: any) => {
                 value.recorded_at = new Date(value.recorded_at)
                 return value

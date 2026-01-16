@@ -1,7 +1,8 @@
 import { axiosInstance } from './config'
 
 const wordsApi = {
-    async getSpellingTask(count :Number, minLevel :Number, maxLevel :Number, callback: ((data: any) => void) | undefined){
+
+    async getSpellingTask(count :Number, minLevel :Number, maxLevel :Number){
         const response = await axiosInstance({
             method: 'get',
             url: 'spellings/task',
@@ -11,10 +12,10 @@ const wordsApi = {
                 max: maxLevel,
             }
         })
-        if (callback)
-            callback(response.data)
+        return response.data
     },
-    async getAccentTask(count :Number, minLevel :Number, maxLevel :Number, callback: ((data: any) => void) | undefined){
+
+    async getAccentTask(count :Number, minLevel :Number, maxLevel :Number){
         const response = await axiosInstance({
             method: 'get',
             url: 'accents/task',
@@ -24,8 +25,7 @@ const wordsApi = {
                 max: maxLevel,
             }
         })
-        if (callback)
-            callback(response.data)
+        return response.data
     },
 
 }

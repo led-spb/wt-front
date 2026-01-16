@@ -1,14 +1,16 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { useAuthStore, useUsersStore } from '@/stores';
     import { useRouter, useRoute} from 'vue-router'
-    import { useColors } from 'vuestic-ui';
+    import { useColors, useToast } from 'vuestic-ui';
+    import { axiosInstance } from '@/api/config';
 
     const showSidebar = ref(false)
     const auth = useAuthStore()
     const user = useUsersStore()
     const router = useRouter()
     const colorManager = useColors()
+    const toastManager = useToast()
 
     const darkTheme = computed({
         get() {
@@ -40,6 +42,25 @@
     function isLinkActive(link: any){
         return useRoute().name == link.route
     }
+
+    onMounted(() => {
+        axiosInstance.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                console.log('Global request handler', error);
+
+                if( error.status == 401 )
+                    return router.push( {name: 'login'} )
+
+                toastManager.notify({
+                    message: 'Ошибка при обработке запроса на сервере',
+                    color: 'danger'
+                });
+
+                return Promise.reject(error)
+            }
+        )
+    })
 </script>
 
 
