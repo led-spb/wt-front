@@ -2,6 +2,7 @@
     import { ref, onMounted, computed } from 'vue';
     import { useUsersStore } from '@/stores';
     import WordsStatistic from '@/components/WordsStatistic.vue';
+    import Word from '@/components/Word.vue';
 
     const tabs = ref([
         {label: 'Сегодня', offset: 0},
@@ -21,7 +22,7 @@
     const currentTab = ref(0)
 
     function displayPercent(item: any){
-        return (item.success + item.failed) == 0 ? 0 : Math.ceil(item.success / (item.success + item.failed) * 100)
+        return item.total == 0 ? 0 : Math.ceil(item.success / item.total * 100)
     }
 
     onMounted(() => {
@@ -56,7 +57,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="item in topFailed" :key="item.word.id">
-                            <td>{{ item.word.fullword }}</td>
+                            <td><word :value="item.word"/></td>
                             <td>{{ item.failed }}</td>
                             </tr>
                         </tbody>
@@ -81,7 +82,7 @@
                             <tr v-for="item in userStore.rating" :key="item.user.id">
                             <td>{{ item.user.name }}</td>
                             <td>{{ item.success + item.failed }}</td>
-                            <td>{{ displayPercent(item) }} %</td>
+                            <td v-if="item.total == 0">-</td><td v-else>{{ displayPercent(item) }} %</td>
                             </tr>
                         </tbody>
                         </table>

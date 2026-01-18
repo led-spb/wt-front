@@ -12,7 +12,7 @@
 
     const form = ref({
         login: localStorage.getItem('username') || '',
-        password: ''
+        password: '',
     })
 
     async function onLogin(){
@@ -40,10 +40,8 @@
 
 
 <template>
-    <VaModal :model-value="true" size="auto" withoutTransitions okText="Login" v-on:ok="onLogin()" v-on:cancel="router.back()">
-        <VaForm class="flex">
-            <VaInput label="Login" v-model="form.login" class="row" :rules="[(v) => Boolean(v) || 'Login is required']"/>
-            <VaInput label="Password" v-model="form.password" type="password" class="row" :rules="[(v) => Boolean(v) || 'Password is required']"/>
-        </VaForm>
-    </VaModal>
+    <va-modal :model-value="true" size="auto" withoutTransitions okText="Login" v-on:ok="onLogin()" v-on:cancel="router.back()">
+        <va-input label="Логин" v-model="form.login" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
+        <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
+    </va-modal>
 </template>

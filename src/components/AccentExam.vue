@@ -35,7 +35,7 @@
                     <h2 class="letter variant" @click="selectVariant(Number(index))">{{ item }}</h2>
                 </template>
                 <template v-else>
-                    <h2 class="letter" :class="letterClass(Number(index))">{{ item }}{{ model.accents.includes(index)?"\u0301":"" }}</h2>
+                    <h2 class="letter" :class="letterClass(Number(index))">{{ item }}</h2>
                 </template>
             </template>
             <h2 class="letter" v-else>{{ item }}</h2>
@@ -62,6 +62,9 @@
     .corrent {
         color: #14a76c;
     }
+    .corrent::after{
+        content: "\301";
+    }    
     .wrong {
         color: tomato;
     }

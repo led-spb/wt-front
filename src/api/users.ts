@@ -49,6 +49,14 @@ const usersApi = {
             url: 'user/stat',
             data: {success: success, failed: failed}
         })
+    },
+
+    async checkInvite(invite :String): Promise<Boolean> {
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'invites/'+String(invite)
+        })
+        return response.data.status
     }
 }
 
