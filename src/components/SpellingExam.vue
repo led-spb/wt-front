@@ -164,6 +164,7 @@
     }
     .spelling-wrong {
         background: linear-gradient(to top left, transparent 0%, transparent 45%, red 50%, transparent 55%, transparent 100%);
+        /* text-decoration-line: spelling-error; */
     }
     .letter-correct {
         color: tomato;

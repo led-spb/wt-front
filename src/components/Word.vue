@@ -28,17 +28,15 @@
 
 <style scoped>
     .accent {
-        color: #14a76c;
-        font-weight: bold;
+        text-decoration: underline #14a76c 3px;
     }
     .accent::after{
         content: "\301";
+        color: #14a76c;
     }
 
     .spelling {
-        color: #14a76c;
-        font-weight: bold;
-        text-decoration: underline;
+        text-decoration: underline #14a76c 3px;
     }
 
 </style>
