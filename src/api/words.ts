@@ -2,27 +2,25 @@ import { axiosInstance } from './config'
 
 const wordsApi = {
 
-    async getSpellingTask(count :Number, minLevel :Number, maxLevel :Number){
+    async getSpellingTask(count :Number, maxLevel :Number){
         const response = await axiosInstance({
             method: 'get',
             url: 'spellings/task',
             params: {
                 count: count,
-                min: minLevel,
-                max: maxLevel,
+                level: maxLevel,
             }
         })
         return response.data
     },
 
-    async getAccentTask(count :Number, minLevel :Number, maxLevel :Number){
+    async getAccentTask(count :Number, maxLevel :Number){
         const response = await axiosInstance({
             method: 'get',
             url: 'accents/task',
             params: {
                 count: count,
-                min: minLevel,
-                max: maxLevel,
+                level: maxLevel,
             }
         })
         return response.data

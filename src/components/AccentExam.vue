@@ -9,7 +9,7 @@
         return model.value.fullword.split('')
     })
     const vowels = computed( () => 'аеёиоуыэюя'.split(''))
-    const isDone = computed( () => !!model.value?.selected )
+    const isDone = computed( () => typeof model.value?.selected !== 'undefined' )
 
     function selectVariant(index :Number){
         model.value.selected = index

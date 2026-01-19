@@ -11,14 +11,14 @@
     });
     const task = ref({
         count: 20,
-        level: [1, 10]
+        level: 10
     })
     const words = useWordsStore()
 
     function startExam(){
         statistics.value = {success: 0, failed: 0}
 
-        wordsApi.getSpellingTask(task.value.count, task.value.level[0]||1, task.value.level[1]||10)
+        wordsApi.getSpellingTask(task.value.count, task.value.level || 10)
             .then( data => {
                 words.setWords(data)
                 words.nextWord()
