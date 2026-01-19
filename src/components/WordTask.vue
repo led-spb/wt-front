@@ -33,7 +33,7 @@
 
 <template>
     <va-card stripe :stripe-color=' inProcess ? "secondary" : isSuccess ? "success":"danger"'>
-        <va-card-title>{{ props.title }}</va-card-title>
+        <va-card-title><va-icon name="spellcheck" class="card-icon"/>{{ props.title }}</va-card-title>
         <va-card-content>
             
             <template v-if="!word && (statistics.success+statistics.failed)" >

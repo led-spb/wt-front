@@ -24,24 +24,40 @@
     onMounted(() => {
         userStore.loadCurrentUser()
     })
+
+    const progressWordsPct = computed(() => {
+        return Math.ceil(userStore.currentUserStat?.progress?.learned / userStore.currentUserStat?.progress?.total * 100)
+    })
+    const progressWordsLearned = computed(() => userStore.currentUserStat?.progress?.learned)
+    const progressWordsTotal = computed(() => userStore.currentUserStat?.progress?.total)
 </script>
 
 
 <template>
         <va-card class="item">
-            <va-card-title>Статистика</va-card-title>
+            <va-card-title><va-icon name="bar_chart" class="card-icon"/>Статистика</va-card-title>
             <va-card-content>
-                <va-tabs vertical v-model="currentTab">
+                <va-list-item>
+                    <va-list-item-section>
+                        Изучено слов:
+                    </va-list-item-section>
+                    <va-list-item-section icon>{{ progressWordsLearned }} / {{ progressWordsTotal }}</va-list-item-section>
+                </va-list-item>
+
+                <va-progress-bar :model-value="progressWordsPct" showPercent></va-progress-bar>
+                <va-divider/>
+
+                <va-tabs v-model="currentTab" :center="false">
                     <template #tabs>
                         <va-tab :key="tab.label" v-for="tab in tabs">{{ tab.label }}</va-tab>
                     </template>
-                    <words-statistic v-model="stat"/>
                 </va-tabs>
+                <words-statistic v-model="stat"/>
                 </va-card-content>
         </va-card>
 
         <va-card class="item"> 
-            <va-card-title>Топ ошибок</va-card-title>
+            <va-card-title><va-icon name="tour" class="card-icon"/>Топ ошибок</va-card-title>
             <va-card-content>
                 <div class="va-table-responsive">
                         <table class="va-table" width="100%">

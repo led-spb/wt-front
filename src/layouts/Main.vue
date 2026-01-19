@@ -25,7 +25,7 @@
 
     const links = [
         {name: 'Домой', route: 'home', icon: 'home', visible: () => auth.isAuthentificated},
-        {name: 'Орфограммы', route: 'spelling', icon: 'format_color_text', visible: () => auth.isAuthentificated},
+        {name: 'Орфограммы', route: 'spelling', icon: 'spellcheck', visible: () => auth.isAuthentificated},
         {name: 'Ударения', route: 'accent', icon: 'format_size', visible: () => auth.isAuthentificated},
         {name: 'Рейтинг', route: 'rating', icon: 'leaderboard', visible: () => auth.isAuthentificated},
         {name: 'Вход', route: 'login', icon: 'login', visible: () => !auth.isAuthentificated},
@@ -138,6 +138,10 @@
 <style lang="scss">
     .item {
         min-width: 360px;
+    }
+
+    .card-icon {
+        margin-right: 4px;
     }
 
     @media all and (max-width: 576px) {

@@ -11,7 +11,7 @@
 
 <template>
     <va-card class="item">
-        <va-card-title>Рейтинг за неделю</va-card-title>
+        <va-card-title><va-icon name="leaderboard" class="card-icon"/>Рейтинг за неделю</va-card-title>
         <va-card-content>
             <div class="va-table-responsive">
                     <table class="va-table" width="100%">
