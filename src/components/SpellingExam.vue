@@ -139,12 +139,14 @@
         padding: 0 2px;
         font-size: 40px;
         transform: padding .25s;
+        user-select: none;
     }
     .spelling{
         display: flex;
+        border-bottom: 1px solid;
     }
     .variant {
-        padding: 0 2px;
+        padding: 0px 2px;
         font-size: 35px;
         cursor: pointer;
         border: 1px solid;
@@ -152,15 +154,17 @@
         transform: translateY(-20px);
     }
     .variant-box {
-        margin-right: 5px;
+        margin: 0px 5px 0px 5px;
         display: flex;     
     }
     .letter-right {
         color: #14a76c;
+        user-select: none;
     }
     .letter-wrong {
         display: flex;
         position: relative;
+        user-select: none;
     }
     .spelling-wrong {
         background: linear-gradient(to top left, transparent 0%, transparent 45%, red 50%, transparent 55%, transparent 100%);
@@ -175,5 +179,6 @@
         justify-content: center;
         opacity: 1;        
         transform: translateY(-60%);
+        user-select: none;
     }
 </style>
