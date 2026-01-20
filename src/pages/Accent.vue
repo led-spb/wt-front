@@ -12,14 +12,15 @@
     });
     const task = ref({
         count: 20,
-        level: 10
+        level: 10,
+        errors: 50,
     })
     const words = useWordsStore()
 
     function startExam(){
         statistics.value = {success: 0, failed: 0}
 
-        wordsApi.getAccentTask(task.value.count, task.value.level)
+        wordsApi.getAccentTask(task.value.count, task.value.level, task.value.errors)
             .then( data => {
                 words.setWords(data)
                 words.nextWord()

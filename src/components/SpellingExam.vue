@@ -52,6 +52,9 @@
             emit('complete', model.value.result )
         }
     }
+    function cancelChoice(item: any){
+        if (item.selected)  item.selected = undefined;
+    }
 
     function getSpellingRight(spelling: any){
         return model.value.fullword.slice( spelling.position, spelling.position+spelling.length )
@@ -109,17 +112,15 @@
                 </template>
 
                 <template v-else>
-                    <div class="spelling">
-                        <template v-if="item.selected !== undefined">
+                    <div class="spelling" v-on:click="cancelChoice(item)" v-if='typeof item.selected !== "undefined"'>
                             <h2 class="letter" v-for="letter in item.selected">{{ encodeSpaces(letter) }}</h2>
-                        </template>
-                        <template v-else>
-                            <div class="variant-box">
-                                <h2 v-for="(variant, index) in item.variants"
-                                    class="variant" 
-                                    @click="selectVariant(item, variant)">{{ mapVariantChars(variant) }}</h2>
-                            </div>
-                        </template>
+                    </div>
+                    <div class="spelling" v-else>
+                        <div class="variant-box">
+                            <h2 v-for="(variant, index) in item.variants"
+                                class="variant" 
+                                @click="selectVariant(item, variant)">{{ mapVariantChars(variant) }}</h2>
+                        </div>
                     </div>
                 </template>
             </template>
@@ -134,37 +135,36 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        user-select: none;
     }
     .letter {
         padding: 0 2px;
         font-size: 40px;
         transform: padding .25s;
-        user-select: none;
     }
     .spelling{
         display: flex;
-        border-bottom: 1px solid;
+        border-bottom: 1px dashed;
     }
     .variant {
         padding: 0px 2px;
-        font-size: 35px;
         cursor: pointer;
         border: 1px solid;
         border-radius: 5px;
         transform: translateY(-20px);
+        /* background-color: dimgray; */
     }
     .variant-box {
         margin: 0px 5px 0px 5px;
         display: flex;     
+        font-size: 35px;
     }
     .letter-right {
         color: #14a76c;
-        user-select: none;
     }
     .letter-wrong {
         display: flex;
         position: relative;
-        user-select: none;
     }
     .spelling-wrong {
         background: linear-gradient(to top left, transparent 0%, transparent 45%, red 50%, transparent 55%, transparent 100%);
@@ -179,6 +179,5 @@
         justify-content: center;
         opacity: 1;        
         transform: translateY(-60%);
-        user-select: none;
     }
 </style>

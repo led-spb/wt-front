@@ -9,7 +9,7 @@
         {type: Object, default: {success: 0, failed: 0}}
     );
     const task = defineModel('task', 
-        {type: Object, default: {count: 20, level: 10}}
+        {type: Object, default: {count: 20, errors: 50, level: 10}}
     );
 
     const props = defineProps({
@@ -61,6 +61,8 @@
                     <va-slider label="Уровень" pins track-label-visible :min="1" :max="10" v-model="task.level"></va-slider>
                     <div class="row" style="min-height: 2vh;"></div>
                     <va-slider label="Количество слов" pins track-label-visible :min="20" :max="50" :step="10" v-model="task.count"></va-slider>
+                    <div class="row" style="min-height: 2vh;"></div>
+                    <va-slider label="РНО %" pins track-label-visible :min="0" :max="100" :step="10" v-model="task.errors"></va-slider>
                     <div class="row" style="min-height: 2vh;"></div>
                 </va-form>
                 <va-divider/>
