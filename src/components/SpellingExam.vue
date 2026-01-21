@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed } from 'vue';
+    import { computed, watch } from 'vue';
 
     const model = defineModel(
         {type: Object}
@@ -27,6 +27,26 @@
         return true
     })
 
+    const isComplete = computed(() => {
+        return isDone.value && typeof model.value.result !== "undefined"
+    })
+
+    var timeoutId = -1;
+    watch(isDone, (value, oldValue) => {
+        if( value ){
+            timeoutId = setTimeout(() => { emitCompleteEvent() }, 1000)
+        }else{
+            clearTimeout(timeoutId)
+        }
+    })
+
+    function emitCompleteEvent(){
+        if( isDone.value ){
+            model.value.result = resultWord.value == model.value.fullword
+            // emit('complete', model.value.result )
+        }
+    }
+
     const resultWord = computed(() => {
         const result = [];
         for (const letter of letters.value) {
@@ -47,13 +67,11 @@
 
     function selectVariant(item: any, variant: string){
         item.selected = variant.replace("_","")
-        if( isDone.value ){
-            model.value.result = resultWord.value == model.value.fullword
-            emit('complete', model.value.result )
-        }
     }
     function cancelChoice(item: any){
-        if (item.selected)  item.selected = undefined;
+        if (typeof item.selected !== "undefined"){
+            item.selected = undefined;
+        }
     }
 
     function getSpellingRight(spelling: any){
@@ -82,7 +100,7 @@
 
 <template>
     <div class="word-block">
-        <template v-if="isDone">
+        <template v-if="isComplete">
 
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
@@ -113,7 +131,12 @@
 
                 <template v-else>
                     <div class="spelling" v-on:click="cancelChoice(item)" v-if='typeof item.selected !== "undefined"'>
+                        <template v-if="item.selected == ''">
+                            <!-- <h2 class="letter space">&thinsp;</h2> -->
+                        </template>
+                        <template v-else>
                             <h2 class="letter" v-for="letter in item.selected">{{ encodeSpaces(letter) }}</h2>
+                        </template>
                     </div>
                     <div class="spelling" v-else>
                         <div class="variant-box">
