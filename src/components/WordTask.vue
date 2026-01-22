@@ -8,7 +8,7 @@
     const statistics = defineModel( 'statistics',
         {type: Object, default: {success: 0, failed: 0}}
     );
-    const task = defineModel('task', 
+    const task = defineModel('task',
         {type: Object, default: {count: 20, errors: 50, level: 10, tags: Array<any>}}
     );
     const tags = defineModel('tags',
@@ -19,7 +19,7 @@
         title: { type: String }
     })
 
-    const emit = defineEmits(['complete', 'next', 'start']);
+    const emit = defineEmits(['complete', 'next', 'start', 'report']);
 
     const inProcess = computed(() => typeof word.value?.result == 'undefined');
     const isSuccess = computed(() => word.value && word.value.result);
@@ -38,7 +38,7 @@
     <va-card stripe :stripe-color=' inProcess ? "secondary" : isSuccess ? "success":"danger"'>
         <va-card-title><va-icon name="spellcheck" class="card-icon"/>{{ props.title }}</va-card-title>
         <va-card-content>
-            
+
             <template v-if="!word && (statistics.success+statistics.failed)" >
                 <words-statistic v-model="statistics"/>
                 <va-divider/>
@@ -55,8 +55,15 @@
                     <span>{{ word?.context }}</span>
                 </div>
                 <va-divider/>
-                <div class="row justify-center">
+                <div class="row">
+                    <va-spacer/>
                     <va-button :disabled="inProcess" class="primary" icon-right="arrow_forward" v-on:click="emit('next')">Дальше</va-button>
+                    <va-spacer/>
+                    <va-button-dropdown preset="secondary">
+                        <va-menu-list>
+                            <va-menu-item @selected="emit('report')">Сообщить об ошибке</va-menu-item>
+                        </va-menu-list>
+                    </va-button-dropdown>
                 </div>
             </template>
             <template v-else>
@@ -71,9 +78,11 @@
                     <div class="row" style="min-height: 2vh;"></div>
                 </va-form>
                 <va-divider/>
-                <div class="row justify-center">
+                <div class="row">
+                    <va-spacer/>
                     <va-button class="primary" icon-right="arrow_forward" v-on:click="emit('start')">Начать</va-button>
-                </div>                    
+                    <va-spacer/>
+                </div>
             </template>
 
         </va-card-content>

@@ -57,7 +57,17 @@ const usersApi = {
             url: 'invites/'+String(invite)
         })
         return response.data.status
-    }
+    },
+
+    sendReport(word_id :number){
+        return axiosInstance({
+            method: 'put',
+            url: 'user/report',
+            data: {
+                word: word_id
+            }
+        })
+    },
 }
 
 export { usersApi }

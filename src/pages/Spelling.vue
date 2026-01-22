@@ -44,6 +44,12 @@
         }
     }
 
+    function sendUserRport(){
+        if( words.currentWord?.id ){
+            usersApi.sendReport(words.currentWord?.id)
+        }
+    }
+
     onMounted(() => {
         words.setWords([])
     })
@@ -56,7 +62,7 @@
         v-model:word="words.currentWord" 
         v-model:task="task"
         v-model:tags="tags"
-        @start="startExam" @next="words.nextWord" @complete="onCompleteWord">
+        @start="startExam" @next="words.nextWord" @complete="onCompleteWord" @report="sendUserRport">
         <spelling-exam v-model="words.currentWord"></spelling-exam>
     </word-task>
 </template>
