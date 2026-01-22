@@ -1,8 +1,8 @@
 <script setup lang="ts">
-    import { ref, onMounted } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { wordsApi } from '@/api/words';
     import { usersApi } from '@/api/users';
-    import { useWordsStore } from '@/stores';
+    import { useWordsStore, useTagsStore } from '@/stores';
     import WordTask from '@/components/WordTask.vue';
     import AccentExam from '@/components/AccentExam.vue';
 
@@ -14,13 +14,20 @@
         count: 20,
         level: 10,
         errors: 50,
+        tags: [],
     })
     const words = useWordsStore()
+    const tagsStore = useTagsStore()
+    const tags = computed(() => {
+        return tagsStore.tags?.filter( (tag :any) => {
+            return tag?.type == "accent"
+        } )
+    })
 
     function startExam(){
         statistics.value = {success: 0, failed: 0}
 
-        wordsApi.getAccentTask(task.value.count, task.value.level, task.value.errors)
+        wordsApi.getAccentTask(task.value.tags, task.value.count, task.value.level, task.value.errors)
             .then( data => {
                 words.setWords(data)
                 words.nextWord()
@@ -46,6 +53,7 @@
         v-model:statistics="statistics" 
         v-model:word="words.currentWord"
         v-model:task="task"
+        v-model:tags="tags"
         @start="startExam" @next="words.nextWord" @complete="onCompleteWord">
         <accent-exam v-model="words.currentWord"></accent-exam>
     </word-task>

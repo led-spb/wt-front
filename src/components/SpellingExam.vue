@@ -121,7 +121,6 @@
             </template>
 
         </template>
-
         <template v-else>
 
             <template v-for="item in letters">
@@ -140,7 +139,7 @@
                     </div>
                     <div class="spelling" v-else>
                         <div class="variant-box">
-                            <h2 v-for="(variant, index) in item.variants"
+                            <h2 v-for="(variant, index) in item.variants.toSorted(() => Math.random()-0.5)"
                                 class="variant" 
                                 @click="selectVariant(item, variant)">{{ mapVariantChars(variant) }}</h2>
                         </div>
