@@ -3,8 +3,6 @@ import { axiosInstance } from './config'
 const wordsApi = {
 
     async getSpellingTask(tags: any, count :number, maxLevel :number, errors :number){
-        console.log('tags '+tags);
-
         const response = await axiosInstance({
             method: 'get',
             url: 'spellings/task',
@@ -32,7 +30,24 @@ const wordsApi = {
         return response.data
     },
 
+
+    async getWordByName(name: string){
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'words',
+            params: { name }
+        })
+        return response.data
+    },
+
+    async getWordById(id: number){
+        const response = await axiosInstance({
+            method: 'get',
+            url: `words/${id}`,
+        })
+        return response.data
+    },
+
 }
 
 export { wordsApi }
-

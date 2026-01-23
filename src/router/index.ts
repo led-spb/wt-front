@@ -9,41 +9,37 @@ const router = createRouter({
             path: '/',
             component: () => import('@/layouts/Main.vue'),
             children: [
-                {   path: '',
-                    name: 'home',
+                {   path: '', name: 'home',
                     component: () => import('@/pages/Home.vue'),
                     meta: { requiresAuth: true },
                 },
-                {   path: 'rating',
-                    name: 'rating',
+                {   path: 'rating', name: 'rating',
                     component: () => import('@/pages/Rating.vue'),
                     meta: { requiresAuth: true },
                 },
                 {
-                    path: 'accent',
-                    name: 'accent',
+                    path: 'accent', name: 'accent',
                     component: () => import('@/pages/Accent.vue'),
                     meta: { requiresAuth: true },
                 },
                 {
-                    path: 'spelling',
-                    name: 'spelling',
+                    path: 'spelling', name: 'spelling',
                     component: () => import('@/pages/Spelling.vue'),
                     meta: { requiresAuth: true },
                 },
                 {
-                    path: 'login',
-                    name: 'login',
+                    path: 'login', name: 'login',
                     component: () => import('@/pages/Login.vue')
                 },
                 {
-                    path: 'logout',
-                    name: 'logout',
+                    path: 'logout', name: 'logout',
                     component: () => import('@/pages/Logout.vue')
                 },
-                {   path: 'register/:invite',
-                    name: 'register',
+                {   path: 'register/:invite', name: 'register',
                     component: () => import('@/pages/Register.vue')
+                },
+                {   path: 'admin', name: 'admin',
+                    component: () => import('@/pages/Admin.vue')
                 }
             ]
         },
