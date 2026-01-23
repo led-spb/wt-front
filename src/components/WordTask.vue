@@ -11,12 +11,11 @@
     const task = defineModel('task',
         {type: Object, default: {count: 20, errors: 50, level: 10, tags: Array<any>}}
     );
-    const tags = defineModel('tags',
-        {type: Array<any>, default: []}
-    );
 
     const props = defineProps({
-        title: { type: String }
+        title: { type: String, default: "" },
+        tags: { type: Array<any>, default: []},
+        rules: { type: Array<any>, default: []},
     })
 
     const emit = defineEmits(['complete', 'next', 'start', 'report']);
@@ -54,6 +53,10 @@
                 <div class="va-text-block" v-if="!!word?.context">
                     <span>{{ word?.context }}</span>
                 </div>
+                <div class="va-text-block" v-for="rule, index in props.rules" v-if="!inProcess && !isSuccess">
+                    <va-divider v-if="index > 0"/>
+                    <p v-for="paragraph in rule.description.split('\n')" >{{ paragraph }}</p>
+                </div>
                 <va-divider/>
                 <div class="row">
                     <va-spacer/>
@@ -70,7 +73,7 @@
                 <va-form>
                     <va-slider label="Уровень" pins track-label-visible :min="1" :max="10" v-model="task.level"></va-slider>
                     <div class="row" style="min-height: 2vh;"></div>
-                    <va-select label="Темы" multiple :options="tags" text-by="desciption" value-by="id" v-model="task.tags" :max-visible-options="1" style="display: flex"></va-select>
+                    <va-select label="Темы" multiple :options="props.tags" text-by="desciption" value-by="id" v-model="task.tags" :max-visible-options="1" style="display: flex"></va-select>
                     <div class="row" style="min-height: 2vh;"></div>
                     <va-slider label="Количество слов" pins track-label-visible :min="20" :max="50" :step="10" v-model="task.count"></va-slider>
                     <div class="row" style="min-height: 2vh;"></div>

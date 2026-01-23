@@ -1,8 +1,8 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed, onMounted, watch } from 'vue';
     import { wordsApi } from '@/api/words';
     import { usersApi } from '@/api/users';
-    import { useWordsStore, useTagsStore } from '@/stores';
+    import { useWordsStore, useTagsStore, useRuleStore } from '@/stores';
 
 
     import WordTask from '@/components/WordTask.vue';
@@ -17,13 +17,17 @@
         level: 10,
         tags: Array(),
     })
-    const words = useWordsStore()
+    const wordsStore = useWordsStore()
     const tagsStore = useTagsStore()
+    const ruleStore = useRuleStore()
 
     const tags = computed(() => {
         return tagsStore.tags?.filter( (tag :any) => {
             return tag?.type == "spelling"
         } )
+    })
+    const currentRuleList = computed(() => {
+        return wordsStore?.currentWord?.rules?.map( (ruleId: number) => ruleStore.ruleById(ruleId) )
     })
 
     function startExam(){
@@ -31,27 +35,27 @@
 
         wordsApi.getSpellingTask(task.value.tags, task.value.count, task.value.level || 10, task.value.errors)
             .then( data => {
-                words.setWords(data)
-                words.nextWord()
+                wordsStore.setWords(data)
+                wordsStore.nextWord()
             })
     }
 
     function onCompleteWord(result: boolean){
         if( result ) {
-            usersApi.sendUserStat([words.currentWord.id], [])
+            usersApi.sendUserStat([wordsStore.currentWord.id], [])
         } else {
-            usersApi.sendUserStat([], [words.currentWord.id])
+            usersApi.sendUserStat([], [wordsStore.currentWord.id])
         }
     }
 
     function sendUserRport(){
-        if( words.currentWord?.id ){
-            usersApi.sendReport(words.currentWord?.id)
+        if( wordsStore.currentWord?.id ){
+            usersApi.sendReport(wordsStore.currentWord?.id)
         }
     }
 
     onMounted(() => {
-        words.setWords([])
+        wordsStore.setWords([])
     })
 </script>
 
@@ -59,11 +63,11 @@
     <word-task class="item"
         title="Орфограммы/Словарные слова" 
         v-model:statistics="statistics" 
-        v-model:word="words.currentWord" 
+        v-model:word="wordsStore.currentWord" 
         v-model:task="task"
-        v-model:tags="tags"
-        @start="startExam" @next="words.nextWord" @complete="onCompleteWord" @report="sendUserRport">
-        <spelling-exam v-model="words.currentWord"></spelling-exam>
+        :tags="tags" :rules="currentRuleList"
+        @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord" @report="sendUserRport">
+        <spelling-exam v-model="wordsStore.currentWord"></spelling-exam>
     </word-task>
 </template>
 

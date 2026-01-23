@@ -1,8 +1,8 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed, onMounted, watch } from 'vue';
     import { wordsApi } from '@/api/words';
     import { usersApi } from '@/api/users';
-    import { useWordsStore, useTagsStore } from '@/stores';
+    import { useWordsStore, useTagsStore, useRuleStore } from '@/stores';
     import WordTask from '@/components/WordTask.vue';
     import AccentExam from '@/components/AccentExam.vue';
 
@@ -16,12 +16,17 @@
         errors: 50,
         tags: [],
     })
-    const words = useWordsStore()
+    const wordsStore = useWordsStore()
     const tagsStore = useTagsStore()
+    const ruleStore = useRuleStore()
+
     const tags = computed(() => {
         return tagsStore.tags?.filter( (tag :any) => {
             return tag?.type == "accent"
         } )
+    })
+    const currentRuleList = computed(() => {
+        return wordsStore?.currentWord?.rules?.map( (ruleId: number) => ruleStore.ruleById(ruleId) )
     })
 
     function startExam(){
@@ -29,33 +34,31 @@
 
         wordsApi.getAccentTask(task.value.tags, task.value.count, task.value.level, task.value.errors)
             .then( data => {
-                words.setWords(data)
-                words.nextWord()
+                wordsStore.setWords(data)
+                wordsStore.nextWord()
             })
     }
 
     function onCompleteWord(result: boolean){
         if( result ) {
-            usersApi.sendUserStat([words.currentWord.id], [])
+            usersApi.sendUserStat([wordsStore.currentWord.id], [])
         } else {
-            usersApi.sendUserStat([], [words.currentWord.id])
+            usersApi.sendUserStat([], [wordsStore.currentWord.id])
         }
     }
 
     onMounted(() => {
-        words.setWords([])
+        wordsStore.setWords([])
     })
 </script>
 
 <template>
     <word-task class="item"
         title="Ударения" 
-        v-model:statistics="statistics" 
-        v-model:word="words.currentWord"
-        v-model:task="task"
-        v-model:tags="tags"
-        @start="startExam" @next="words.nextWord" @complete="onCompleteWord">
-        <accent-exam v-model="words.currentWord"></accent-exam>
+        v-model:word="wordsStore.currentWord" v-model:statistics="statistics" v-model:task="task"
+        :tags="tags" :rules="currentRuleList"
+        @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord">
+        <accent-exam v-model="wordsStore.currentWord"></accent-exam>
     </word-task>
 </template>
 
