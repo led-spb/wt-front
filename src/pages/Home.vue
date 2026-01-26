@@ -1,7 +1,8 @@
 <script setup lang="ts">
     import { ref, onMounted, computed } from 'vue';
     import { useUsersStore } from '@/stores';
-    import WordsStatistic from '@/components/WordsStatistic.vue';
+
+    import TaskStatistic from '@/components/TaskStatistic.vue';
     import Word from '@/components/Word.vue';
 
     const tabs = ref([
@@ -52,7 +53,7 @@
                         <va-tab :key="tab.label" v-for="tab in tabs">{{ tab.label }}</va-tab>
                     </template>
                 </va-tabs>
-                <words-statistic v-model="stat"/>
+                <task-statistic v-model="stat"/>
                 </va-card-content>
         </va-card>
 
