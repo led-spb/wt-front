@@ -12,7 +12,7 @@
         let result = new Array();
 
         const spellings = (model.value.spellings || []).toSorted(
-            (a: any, b: any) => {return b.position-a.position == 0 ? (b.length-a.length) : (b.position - a.position)}
+            (a: any, b: any) => {return a.position-b.position == 0 ? (b.length-a.length) : (a.position - b.position)}
         )
 
         for(const spelling of spellings){
