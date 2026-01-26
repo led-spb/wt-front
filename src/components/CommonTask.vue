@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { ref, computed, watch } from 'vue';
-    import WordsStatistic from '@/components/WordsStatistic.vue';
+    import TasksStatistic from '@/components/TaskStatistic.vue';
+    import Rule from './Rule.vue';
 
     const word = defineModel('word', {
         type: Object,
@@ -44,7 +45,7 @@
         <va-card-content>
 
             <template v-if="!word && (statistics.success+statistics.failed)" >
-                <words-statistic v-model="statistics"/>
+                <task-statistic v-model="statistics"/>
                 <va-divider/>
             </template>
             <div class="row" style="min-height: 1vh;"></div>
@@ -60,7 +61,7 @@
                 </div>
                 <div class="va-text-block" v-for="rule, index in props.rules" v-if="(!inProcess && !isSuccess) || showRules">
                     <va-divider v-if="index > 0"/>
-                    <p v-for="paragraph in rule.description.split('\n')" >{{ paragraph }}</p>
+                    <rule :value="rule"/>
                 </div>
                 <va-divider/>
                 <div class="row">

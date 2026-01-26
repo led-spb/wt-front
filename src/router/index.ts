@@ -39,7 +39,8 @@ const router = createRouter({
                     component: () => import('@/pages/Register.vue')
                 },
                 {   path: 'admin', name: 'admin',
-                    component: () => import('@/pages/Admin.vue')
+                    component: () => import('@/pages/Admin.vue'),
+                    meta: { requiresAuth: true },
                 }
             ]
         },

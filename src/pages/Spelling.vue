@@ -1,11 +1,10 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted, watch } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { wordsApi } from '@/api/words';
     import { usersApi } from '@/api/users';
     import { useWordsStore, useTagsStore, useRuleStore } from '@/stores';
 
-
-    import WordTask from '@/components/WordTask.vue';
+    import CommonTask from '@/components/CommonTask.vue';
     import SpellingExam from '@/components/SpellingExam.vue';
 
     const statistics = ref({
@@ -27,7 +26,11 @@
         } )
     })
     const currentRuleList = computed(() => {
-        return wordsStore?.currentWord?.rules?.map( (ruleId: number) => ruleStore.ruleById(ruleId) )
+        return wordsStore?.currentWord?.rules?.map(
+            (ruleId: number) => ruleStore.ruleById(ruleId)
+        ).filter(
+            (rule: any) => rule?.type == "spelling"
+        )
     })
 
     function startExam(){
@@ -60,7 +63,7 @@
 </script>
 
 <template>
-    <word-task class="item"
+    <common-task class="item"
         title="Орфограммы/Словарные слова" 
         v-model:statistics="statistics" 
         v-model:word="wordsStore.currentWord" 
@@ -68,7 +71,7 @@
         :tags="tags" :rules="currentRuleList"
         @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord" @report="sendUserRport">
         <spelling-exam v-model="wordsStore.currentWord"></spelling-exam>
-    </word-task>
+    </common-task>
 </template>
 
 <style scoped>

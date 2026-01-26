@@ -1,9 +1,9 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted, watch } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { wordsApi } from '@/api/words';
     import { usersApi } from '@/api/users';
     import { useWordsStore, useTagsStore, useRuleStore } from '@/stores';
-    import WordTask from '@/components/WordTask.vue';
+    import CommonTask from '@/components/CommonTask.vue';
     import AccentExam from '@/components/AccentExam.vue';
 
 
@@ -26,7 +26,11 @@
         } )
     })
     const currentRuleList = computed(() => {
-        return wordsStore?.currentWord?.rules?.map( (ruleId: number) => ruleStore.ruleById(ruleId) )
+        return wordsStore?.currentWord?.rules?.map(
+             (ruleId: number) => ruleStore.ruleById(ruleId)
+        ).filter(
+            (rule: any) => rule?.type == "accent"
+        )
     })
 
     function startExam(){
@@ -53,13 +57,13 @@
 </script>
 
 <template>
-    <word-task class="item"
+    <common-task class="item"
         title="Ударения" 
         v-model:word="wordsStore.currentWord" v-model:statistics="statistics" v-model:task="task"
         :tags="tags" :rules="currentRuleList"
         @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord">
         <accent-exam v-model="wordsStore.currentWord"></accent-exam>
-    </word-task>
+    </common-task>
 </template>
 
 <style scoped>
