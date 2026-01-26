@@ -64,7 +64,7 @@
                 </div>
                 <va-divider/>
                 <div class="row">
-                    <va-button preset="secondary" @click="showRules = true" :disabled="!props.rules">Правило</va-button>
+                    <va-button preset="secondary" @click="showRules = true" :disabled="!props.rules || props.rules.length == 0 || showRules">Правило</va-button>
                     <va-spacer/>
                     <va-button :disabled="inProcess" class="primary" icon-right="arrow_forward" v-on:click="emit('next')">Дальше</va-button>
                     <va-spacer/>

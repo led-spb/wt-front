@@ -7,17 +7,26 @@
     const emit = defineEmits(['complete']);
 
     const letters = computed(() => {
-        const word_letters = model.value.fullword.split('')
+        const word = model.value.fullword;
+        let position = 0;
+        let result = new Array();
 
-        const spellings = [...model.value.spellings||[]]
-        spellings.sort(
-            (a, b) => {return b.position-a.position == 0 ? (b.length-a.length) : (b.position - a.position)}
+        const spellings = (model.value.spellings || []).toSorted(
+            (a: any, b: any) => {return b.position-a.position == 0 ? (b.length-a.length) : (b.position - a.position)}
         )
 
-        spellings.forEach(element => {
-            return word_letters.splice(element.position, element.length, element);
-        });
-        return word_letters;
+        for(const spelling of spellings){
+            const letters = word.substr(position, spelling.position - position)
+            position = spelling.position + spelling.length
+            if(letters != ""){
+                result.push( letters )
+            }
+            result.push(spelling)
+        }
+        if( word.substr(position) != ""){
+            result.push(word.substr(position));
+        }
+        return result;
     });
 
     const isDone = computed(() =>{
@@ -43,7 +52,6 @@
     function emitCompleteEvent(){
         if( isDone.value ){
             model.value.result = resultWord.value == model.value.fullword
-            // emit('complete', model.value.result )
         }
     }
 
@@ -101,21 +109,18 @@
 <template>
     <div class="word-block">
         <template v-if="isComplete">
-
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
                     <h2 class="letter">{{ encodeSpaces(item) }}</h2>
                 </template>
                 <template v-else>
                     <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
-                        <h2 class="letter letter-right" v-for="letter in item.selected">{{ encodeSpaces(letter) }}</h2>
+                        <h2 class="letter letter-right">{{ encodeSpaces(item.selected) }}</h2>
                     </div>
                     <div class="spelling spelling-wrong" v-else>
-                        <template v-for="part in zip(item.selected.split(''), getSpellingRight(item).split(''))">
-                            <h2 class="letter letter-wrong" v-if="!!part[0]">{{ encodeSpaces(part[0]) }}</h2>
-                            <h2 class="letter" v-else>{{ encodeSpaces(" ") }}</h2>
-                            <h2 class="letter letter-correct">{{ encodeSpaces(part[1]) }}</h2>
-                        </template>
+                        <h2 class="letter letter-wrong" v-if="item.selected">{{ encodeSpaces(item.selected) }}</h2>
+                        <h2 class="letter letter-wrong" v-else>{{ encodeSpaces(' ') }}</h2>
+                        <h2 class="letter letter-correct">{{ getSpellingRight(item) }}</h2>
                     </div>
                 </template>
             </template>
@@ -130,12 +135,7 @@
 
                 <template v-else>
                     <div class="spelling" v-on:click="cancelChoice(item)" v-if='typeof item.selected !== "undefined"'>
-                        <template v-if="item.selected == ''">
-                            <!-- <h2 class="letter space">&thinsp;</h2> -->
-                        </template>
-                        <template v-else>
-                            <h2 class="letter" v-for="letter in item.selected">{{ encodeSpaces(letter) }}</h2>
-                        </template>
+                        <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
                     </div>
                     <div class="spelling" v-else>
                         <div class="variant-box">
@@ -158,9 +158,9 @@
         flex-wrap: wrap;
         align-items: center;
         user-select: none;
+        letter-spacing: 2px;
     }
     .letter {
-        padding: 0 2px;
         font-size: 40px;
         transform: padding .25s;
     }
@@ -174,7 +174,6 @@
         border: 1px solid;
         border-radius: 5px;
         transform: translateY(-20px);
-        /* background-color: dimgray; */
     }
     .variant-box {
         margin: 0px 5px 0px 5px;
@@ -190,7 +189,6 @@
     }
     .spelling-wrong {
         background: linear-gradient(to top left, transparent 0%, transparent 45%, red 50%, transparent 55%, transparent 100%);
-        /* text-decoration-line: spelling-error; */
     }
     .letter-correct {
         color: tomato;
