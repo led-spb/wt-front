@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref, computed, watch } from 'vue';
-    import TasksStatistic from '@/components/TaskStatistic.vue';
+    import TaskStatistic from '@/components/TaskStatistic.vue';
     import Rule from './Rule.vue';
 
     const word = defineModel('word', {
