@@ -33,7 +33,6 @@
                     message: 'Неверные логин/пароль',
                     color: "warning",
                 })
-                console.log(error)
             })
     }
 </script>

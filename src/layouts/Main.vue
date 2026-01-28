@@ -28,6 +28,7 @@
         {name: 'Орфограммы', route: 'spelling', icon: 'spellcheck', visible: () => auth.isAuthentificated},
         {name: 'Ударения', route: 'accent', icon: 'format_size', visible: () => auth.isAuthentificated},
         {name: 'Рейтинг', route: 'rating', icon: 'leaderboard', visible: () => auth.isAuthentificated},
+        // {name: 'Правила', route: 'rules', icon: 'rule', visible: () => auth.isAuthentificated},
         {name: 'Вход', route: 'login', icon: 'login', visible: () => !auth.isAuthentificated},
         {name: 'Выход', route: 'logout', icon: 'logout', visible: () => auth.isAuthentificated },
     ]
@@ -45,6 +46,8 @@
     }
 
     onMounted(() => {
+        console.log('Register axis intercepters');
+        
         axiosInstance.interceptors.response.use(
             (response) => response,
             (error) => {

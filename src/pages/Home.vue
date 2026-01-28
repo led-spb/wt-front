@@ -6,21 +6,19 @@
     import Word from '@/components/Word.vue';
 
     const tabs = ref([
-        {label: 'Сегодня', offset: 0},
-        {label: 'Неделя', offset: 7},
-        {label: 'Месяц', offset: 30},
-        {label: 'Всего', offset: 1000},
+        {label: 'Сегодня', value: 0},
+        {label: 'Неделя', value: 7},
+        {label: 'Месяц', value: 30},
+        {label: 'Всего', value: 1000},
     ])
     const userStore = useUsersStore()
     const stat = computed(() => {
-        const selected = currentTab.value
-        const offset = tabs.value[selected]?.offset
-        return userStore.dailyStats(offset || 0)
+        return userStore.dailyStats(currentStatOffset.value || 0)
     })
     const topFailed = computed( () => {
         return userStore.currentUserStat?.failed
     })
-    const currentTab = ref(0)
+    const currentStatOffset = ref(0)
 
     onMounted(() => {
         userStore.loadCurrentUser()
@@ -47,12 +45,7 @@
 
                 <va-progress-bar :model-value="progressWordsPct" showPercent></va-progress-bar>
                 <va-divider/>
-
-                <va-tabs v-model="currentTab" :center="false">
-                    <template #tabs>
-                        <va-tab :key="tab.label" v-for="tab in tabs">{{ tab.label }}</va-tab>
-                    </template>
-                </va-tabs>
+                <va-button-toggle v-model="currentStatOffset" grow color="backgroundSecondary" toggle-color="primary" :options="tabs" size="small"></va-button-toggle>
                 <task-statistic v-model="stat"/>
                 </va-card-content>
         </va-card>

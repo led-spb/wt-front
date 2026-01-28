@@ -8,19 +8,21 @@
 
     const letters = computed(() => {
         const word = model.value.fullword;
+        const result = new Array();
         let position = 0;
-        let result = new Array();
 
         const spellings = (model.value.spellings || []).toSorted(
             (a: any, b: any) => {return a.position-b.position == 0 ? (b.length-a.length) : (a.position - b.position)}
         )
 
-        for(const spelling of spellings){
+        for(const [index, spelling] of spellings.entries()){
             const letters = word.substr(position, spelling.position - position)
             position = spelling.position + spelling.length
             if(letters != ""){
                 result.push( letters )
             }
+            spelling.variants?.sort(() => Math.random()-0.5)
+            spelling.index = index
             result.push(spelling)
         }
         if( word.substr(position) != ""){
@@ -137,10 +139,9 @@
                     <div class="spelling" v-on:click="cancelChoice(item)" v-if='typeof item.selected !== "undefined"'>
                         <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
                     </div>
-                    <div class="spelling" v-else>
+                    <div v-else class="spelling" :class="item.index % 2 ? 'even':''">
                         <div class="variant-box">
-                            <h2 v-for="(variant, index) in item.variants.toSorted(() => Math.random()-0.5)"
-                                class="variant" 
+                            <h2 class="variant" v-for="variant in item.variants"
                                 @click="selectVariant(item, variant)">{{ mapVariantChars(variant) }}</h2>
                         </div>
                     </div>
@@ -174,6 +175,9 @@
         border: 1px solid;
         border-radius: 5px;
         transform: translateY(-20px);
+    }
+    .even .variant {
+        background-color: var(--va-background-border);
     }
     .variant-box {
         margin: 0px 5px 0px 5px;

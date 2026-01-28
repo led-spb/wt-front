@@ -19,5 +19,9 @@ export const useRuleStore = defineStore('rules', () => {
         }
     })
 
-    return { ruleById, rules }
+    function setRules(data: any[]){
+        rules.value = data
+    }
+
+    return { ruleById, rules, setRules }
 })

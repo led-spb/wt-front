@@ -16,7 +16,7 @@
 </template>
 
 <style>
-    ul {
+    ol, ul {
         list-style: inside;
     }
 </style>
