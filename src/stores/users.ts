@@ -13,6 +13,9 @@ export const useUsersStore = defineStore('users', () => {
             currentUser.value = data
             localStorage.setItem('user', currentUser.value.name)
         })
+    }
+
+    function loadCurrentUserStat(){
         usersApi.getUserStat().then( data => {
             data.days = data.days.map( (value: any) => {
                 value.recorded_at = new Date(value.recorded_at)
@@ -24,7 +27,6 @@ export const useUsersStore = defineStore('users', () => {
             rating.value = data
         })
     }
-
 
     function accumulateStatistics(fromDate :Date){
         const days = currentUserStat.value?.days.filter( (item: any) => {
@@ -57,5 +59,5 @@ export const useUsersStore = defineStore('users', () => {
         }
     })
 
-    return { currentUser, currentUserStat, rating, loadCurrentUser, dailyStats}
+    return { currentUser, currentUserStat, rating, loadCurrentUser, loadCurrentUserStat, dailyStats}
 })

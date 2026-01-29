@@ -21,7 +21,7 @@
     const currentStatOffset = ref(0)
 
     onMounted(() => {
-        userStore.loadCurrentUser()
+        userStore.loadCurrentUserStat()
     })
 
     const progressWordsPct = computed(() => {

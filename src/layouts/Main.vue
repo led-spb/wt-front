@@ -1,13 +1,13 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed, onMounted, watch } from 'vue';
     import { useAuthStore, useUsersStore } from '@/stores';
     import { useRouter, useRoute} from 'vue-router'
     import { useColors, useToast } from 'vuestic-ui';
     import { axiosInstance } from '@/api/config';
 
     const showSidebar = ref(false)
-    const auth = useAuthStore()
-    const user = useUsersStore()
+    const authStore = useAuthStore()
+    const userStore = useUsersStore()
     const router = useRouter()
     const colorManager = useColors()
     const toastManager = useToast()
@@ -24,13 +24,13 @@
     })
 
     const links = [
-        {name: 'Домой', route: 'home', icon: 'home', visible: () => auth.isAuthentificated},
-        {name: 'Орфограммы', route: 'spelling', icon: 'spellcheck', visible: () => auth.isAuthentificated},
-        {name: 'Ударения', route: 'accent', icon: 'format_size', visible: () => auth.isAuthentificated},
-        {name: 'Рейтинг', route: 'rating', icon: 'leaderboard', visible: () => auth.isAuthentificated},
-        // {name: 'Правила', route: 'rules', icon: 'rule', visible: () => auth.isAuthentificated},
-        {name: 'Вход', route: 'login', icon: 'login', visible: () => !auth.isAuthentificated},
-        {name: 'Выход', route: 'logout', icon: 'logout', visible: () => auth.isAuthentificated },
+        {name: 'Домой', route: 'home', icon: 'home', visible: () => authStore.isAuthentificated},
+        {name: 'Орфограммы', route: 'spelling', icon: 'spellcheck', visible: () => authStore.isAuthentificated},
+        {name: 'Ударения', route: 'accent', icon: 'format_size', visible: () => authStore.isAuthentificated},
+        {name: 'Рейтинг', route: 'rating', icon: 'leaderboard', visible: () => authStore.isAuthentificated},
+        // {name: 'Правила', route: 'rules', icon: 'rule', visible: () => authStore.isAuthentificated},
+        {name: 'Вход', route: 'login', icon: 'login', visible: () => !authStore.isAuthentificated},
+        {name: 'Выход', route: 'logout', icon: 'logout', visible: () => authStore.isAuthentificated },
     ]
     const panelItems = computed( () => {
         return links.filter(item => item.visible())
@@ -44,6 +44,10 @@
     function isLinkActive(link: any){
         return useRoute().name == link.route
     }
+
+    watch(() => authStore.accessToken, (value, oldValue) => {
+        userStore.loadCurrentUser()
+    })
 
     onMounted(() => {
         console.log('Register axis intercepters');
@@ -64,6 +68,7 @@
                 return Promise.reject(error)
             }
         )
+        userStore.loadCurrentUser()
     })
 </script>
 
@@ -76,7 +81,7 @@
                 <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" style="margin-right: 10px;"/>
                 <va-navbar-item class="font-bold va-h6">Тренажер слов</va-navbar-item>
                 <va-spacer/>
-                <va-navbar-item style="margin-right: 10px;" v-if="user.currentUser">{{ user.currentUser.name  }}</va-navbar-item>
+                <va-navbar-item style="margin-right: 10px;" v-if="userStore.currentUser">{{ userStore.currentUser.name  }}</va-navbar-item>
             </va-app-bar>
         </template>
 
@@ -141,6 +146,7 @@
 <style lang="scss">
     .item {
         min-width: 360px;
+        max-width: 576px;
     }
 
     .card-icon {
@@ -148,12 +154,12 @@
     }
 
     @media all and (max-width: 576px) {
-    .va-modal--mobile-fullscreen .va-modal__dialog {
-        margin: 0 !important;
-        min-width: 360px !important;
-        min-height: 0vh !important;
-        border-radius: 0;
-    }
+        .va-modal--mobile-fullscreen .va-modal__dialog {
+            margin: 0 !important;
+            min-width: 360px !important;
+            min-height: 0vh !important;
+            border-radius: 0;
+        }
     }
 
 </style>
