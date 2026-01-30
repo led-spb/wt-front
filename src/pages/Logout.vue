@@ -16,7 +16,7 @@
         });
         if( result ){
             useAuthStore().setAccessToken("")
-            useUsersStore().currentUser = undefined
+            useUsersStore().user = undefined
             router.push({name: 'login'})
         }else{
             router.back()
