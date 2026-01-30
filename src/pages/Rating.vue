@@ -8,7 +8,7 @@
     }
 
     onMounted(() => {
-        userStore.loadCurrentUserStat()
+        userStore.loadUserRating()
     })
 
     const ratingByProgress = computed(() => {

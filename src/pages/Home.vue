@@ -13,41 +13,54 @@
     ])
     const userStore = useUsersStore()
     const stat = computed(() => {
-        return userStore.dailyStats(currentStatOffset.value || 0)
+        return userStore.statistics(currentStatOffset.value || 0)
     })
     const topFailed = computed( () => {
-        return userStore.currentUserStat?.failed
+        return userStore.troubles
     })
     const currentStatOffset = ref(0)
 
     onMounted(() => {
-        userStore.loadCurrentUserStat()
+        userStore.loadUserInfo()
+        userStore.loadUserStat()
     })
 
-    const progressWordsPct = computed(() => {
-        return Math.ceil(userStore.currentUserStat?.progress?.learned / userStore.currentUserStat?.progress?.total * 100)
-    })
-    const progressWordsLearned = computed(() => userStore.currentUserStat?.progress?.learned)
-    const progressWordsTotal = computed(() => userStore.currentUserStat?.progress?.total)
+    function percent(current :any, total :any){
+        return total > 0 ? Math.ceil(current/total * 100) : 0
+    }
 </script>
 
 
 <template>
         <va-card class="item">
+            <va-card-title><va-icon name="star" class="card-icon"/>Цель на сегодня</va-card-title>
+            <va-card-content>
+                <va-progress-bar :model-value="percent(userStore.progress?.today?.learned, userStore.progress?.today.total)" showPercent></va-progress-bar>
+                <va-list-item>
+                    <va-list-item-section></va-list-item-section>
+                    <va-list-item-section icon>{{ userStore.progress?.today?.learned }} / {{ userStore.progress?.today.total }}</va-list-item-section>
+                </va-list-item>
+                <va-list-item v-if="userStore.progress?.series">
+                    <va-list-item-section>Серия</va-list-item-section>
+                    <va-list-item-section icon><va-chip color="success" size="small">{{ userStore.progress?.series }} дней</va-chip></va-list-item-section>
+                </va-list-item>
+            </va-card-content>
+            <va-card-title><va-icon name="hotel_class" class="card-icon"/>Всего изучено</va-card-title>
+            <va-card-content>
+                <va-progress-bar :model-value="percent(userStore.progress?.overall?.learned, userStore.progress?.overall?.total)" showPercent></va-progress-bar>
+                <va-list-item>
+                    <va-list-item-section></va-list-item-section>
+                    <va-list-item-section icon>{{ userStore.progress?.overall?.learned }} / {{ userStore.progress?.overall?.total }}</va-list-item-section>
+                </va-list-item>
+            </va-card-content>
+        </va-card>
+
+        <va-card class="item">
             <va-card-title><va-icon name="bar_chart" class="card-icon"/>Статистика</va-card-title>
             <va-card-content>
-                <va-list-item>
-                    <va-list-item-section>
-                        Изучено слов:
-                    </va-list-item-section>
-                    <va-list-item-section icon>{{ progressWordsLearned }} / {{ progressWordsTotal }}</va-list-item-section>
-                </va-list-item>
-
-                <va-progress-bar :model-value="progressWordsPct" showPercent></va-progress-bar>
-                <va-divider/>
                 <va-button-toggle v-model="currentStatOffset" grow color="backgroundSecondary" toggle-color="primary" :options="tabs" size="small"></va-button-toggle>
                 <task-statistic v-model="stat"/>
-                </va-card-content>
+            </va-card-content>
         </va-card>
 
         <va-card class="item"> 

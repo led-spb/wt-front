@@ -12,7 +12,7 @@
         let position = 0;
 
         const spellings = (model.value.spellings || []).toSorted(
-            (a: any, b: any) => {return a.position-b.position == 0 ? (b.length-a.length) : (a.position - b.position)}
+            (a: any, b: any) => {return a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)}
         )
 
         for(const [index, spelling] of spellings.entries()){
@@ -113,7 +113,7 @@
         <template v-if="isComplete">
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
-                    <h2 class="letter">{{ encodeSpaces(item) }}</h2>
+                    <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
                 </template>
                 <template v-else>
                     <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
@@ -132,7 +132,7 @@
 
             <template v-for="item in letters">
                 <template v-if="typeof item == 'string'">
-                    <h2 class="letter">{{ encodeSpaces(item) }}</h2>
+                    <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
                 </template>
 
                 <template v-else>
@@ -148,7 +148,6 @@
                 </template>
             </template>
         </template>
-
     </div>
 </template>
 
@@ -164,6 +163,7 @@
     .letter {
         font-size: 40px;
         transform: padding .25s;
+        line-height: 70px;
     }
     .spelling{
         display: flex;
@@ -175,6 +175,7 @@
         border: 1px solid;
         border-radius: 5px;
         transform: translateY(-20px);
+        line-height: 35px;
     }
     .even .variant {
         background-color: var(--va-background-border);

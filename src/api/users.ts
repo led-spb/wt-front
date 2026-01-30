@@ -35,6 +35,22 @@ const usersApi = {
         return response.data
     },
 
+    async getUserProgress(){
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'user/progress',
+        })
+        return response.data        
+    },
+
+    async getUserTrobles(){
+        const response = await axiosInstance({
+            method: 'get',
+            url: 'user/troubles',
+        })
+        return response.data        
+    },
+
     async getUserRating() {
         const response = await axiosInstance({
             method: 'get',

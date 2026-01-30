@@ -4,32 +4,42 @@ import { usersApi } from '@/api/users'
 
 
 export const useUsersStore = defineStore('users', () => {
-    const currentUser = ref()
-    const currentUserStat = ref()
+    const user = ref()
+    const statistics = ref()
+    const progress = ref()
+    const troubles = ref()
     const rating = ref()
 
-    function loadCurrentUser(){
+    function loadUserInfo(){
         usersApi.getCurrentUser().then( data => {
-            currentUser.value = data
-            localStorage.setItem('user', currentUser.value.name)
+            user.value = data
+            localStorage.setItem('user', user.value.name)
+        })
+        usersApi.getUserProgress().then( data => {
+            progress.value = data
         })
     }
 
-    function loadCurrentUserStat(){
+    function loadUserStat(){
         usersApi.getUserStat().then( data => {
-            data.days = data.days.map( (value: any) => {
+            statistics.value = data.map( (value: any) => {
                 value.recorded_at = new Date(value.recorded_at)
                 return value
-            } )
-            currentUserStat.value = data
+            })
         })
+        usersApi.getUserTrobles().then( data => {
+            troubles.value = data
+        })
+    }
+
+    function loadUserRating(){
         usersApi.getUserRating().then( data => {
             rating.value = data
         })
     }
 
     function accumulateStatistics(fromDate :Date){
-        const days = currentUserStat.value?.days.filter( (item: any) => {
+        const days = statistics.value?.filter( (item: any) => {
              return item.recorded_at >= fromDate
         })
         return days?.reduce(
@@ -59,5 +69,5 @@ export const useUsersStore = defineStore('users', () => {
         }
     })
 
-    return { currentUser, currentUserStat, rating, loadCurrentUser, loadCurrentUserStat, dailyStats}
+    return { user, progress, troubles, statistics: dailyStats, rating, loadUserInfo, loadUserStat, loadUserRating}
 })

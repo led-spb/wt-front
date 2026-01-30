@@ -8,6 +8,7 @@
     const showSidebar = ref(false)
     const authStore = useAuthStore()
     const userStore = useUsersStore()
+
     const router = useRouter()
     const colorManager = useColors()
     const toastManager = useToast()
@@ -46,12 +47,11 @@
     }
 
     watch(() => authStore.accessToken, (value, oldValue) => {
-        userStore.loadCurrentUser()
+        userStore.loadUserInfo()
     })
 
     onMounted(() => {
-        console.log('Register axis intercepters');
-        
+        // console.log('Register axis intercepters');        
         axiosInstance.interceptors.response.use(
             (response) => response,
             (error) => {
@@ -68,20 +68,26 @@
                 return Promise.reject(error)
             }
         )
-        userStore.loadCurrentUser()
+        userStore.loadUserInfo()
     })
 </script>
 
 
 <template>
 
-    <va-layout style="min-height: 100vh;" :left="{ fixed: true }" :top="{ fixed: true }">
+    <va-layout style="min-height: 100vh;" :left="{ absolute: true, fixed: true }" :top="{ fixed: true }">
         <template #top>
             <va-app-bar top>
-                <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" style="margin-right: 10px;"/>
+                <va-button :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" class="toolbar_item"/>
                 <va-navbar-item class="font-bold va-h6">Тренажер слов</va-navbar-item>
                 <va-spacer/>
-                <va-navbar-item style="margin-right: 10px;" v-if="userStore.currentUser">{{ userStore.currentUser.name  }}</va-navbar-item>
+
+                <va-badge :text="userStore.progress?.series" overlap class="toolbar_item" v-if="userStore.progress?.series">
+                <va-icon name="local_fire_department" class="toolbar_item"/>
+                </va-badge>
+                <va-navbar-item class="toolbar_item"></va-navbar-item>
+
+                <va-avatar class="toolbar_item" color="warning" size="small" v-if="userStore.user">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
             </va-app-bar>
         </template>
 
@@ -94,7 +100,6 @@
                         <va-icon :name="item.icon" v-if="item.icon"/>
                         <va-sidebar-item-title>{{ item.name }}</va-sidebar-item-title>
                     </va-sidebar-item-content>
-
                 </va-sidebar-item>
 
                 <va-spacer/>
@@ -118,8 +123,7 @@
         </template>
 
         <template #content>
-            <div style="min-height: 5vh;"></div>
-            <div class="container">
+            <div class="container mt-5" >
                 <router-view></router-view>
             </div>
         </template>
@@ -147,6 +151,10 @@
     .item {
         min-width: 360px;
         max-width: 576px;
+    }
+
+    .toolbar_item {
+        margin-right: 10px;
     }
 
     .card-icon {
