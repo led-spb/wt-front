@@ -11,7 +11,7 @@
     const searchString = ref()
     const rules = ref(Array())
 
-    // onMounted(() => loadRuleList() )
+    onMounted(() => loadRuleList() )
 
     function loadRuleList(title: string|null = null, page :number = 1){
         rulesApi.getRules(title, page).then( (data) => {
@@ -42,31 +42,31 @@
         <va-card-title><va-icon name="rule" class="card-icon"/>Правила</va-card-title>
         <va-card-content>
             <!-- <va-input class="row" label="Поиск" inner-label v-model="searchString" @change="loadRuleList(searchString)"></va-input> -->
-            <va-divider/>
-
-            <!-- <va-pagination size="small" v-model="currentPage" gapped :pages="paging.pages" v-if="paging.pages > 1" style="margin-bottom: 10px"/>
             <va-list>
-                <va-list-item v-for="(rule, index) in paging.items" :key="index"  class="list__item">
+                <template v-for="(rule, index) in paging.items" :key="index" >
+                <va-divider />
+                <va-list-item class="list__item">
                     <va-list-item-section>
                         <va-list-item-label caption>{{ rule.title }}</va-list-item-label>
+                        <!-- <va-card square class="item" :bordered="false" style="box-shadow: 0 0">
+                            <va-card-title>{{ rule.title }}</va-card-title>
+                        </va-card> -->
                     </va-list-item-section>
+                    <va-list-separator></va-list-separator>
                 </va-list-item> 
-            </va-list> -->
+                </template>
+            </va-list>
+
+            <!-- <va-pagination size="small" v-model="currentPage" gapped :pages="paging.pages" v-if="paging.pages > 1" style="margin-bottom: 10px"/> -->
         </va-card-content>                 
     </va-card>
-
-    <va-infinite-scroll :load="loadRules">
-        <va-card class="item" v-for="rule in rules">
-            <va-card-title>{{ rule.title }}</va-card-title>
-        </va-card> 
-    </va-infinite-scroll>
 
 </template>
 
 <style scoped>
     .list__item {
-        padding-bottom: 20px;
+        /* padding-bottom: 20px;
         padding-left: 6px;
-        border-left: 4px solid green;
+        border-left: 4px solid green; */
     }
 </style>
