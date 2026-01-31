@@ -33,7 +33,7 @@
         )
     })
 
-    function startExam(){
+    const startExam = () => {
         statistics.value = {success: 0, failed: 0}
 
         wordsApi.getSpellingTask(task.value.tags, task.value.count, task.value.level || 10, task.value.errors)
@@ -43,7 +43,7 @@
             })
     }
 
-    function onCompleteWord(result: boolean){
+    const onCompleteWord = (result: boolean) => {
         if( result ) {
             usersApi.sendUserStat([wordsStore.currentWord.id], [])
         } else {
@@ -51,7 +51,7 @@
         }
     }
 
-    function sendUserRport(){
+    const sendUserRport = () => {
         if( wordsStore.currentWord?.id ){
             usersApi.sendReport(wordsStore.currentWord?.id)
         }

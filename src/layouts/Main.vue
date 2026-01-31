@@ -37,12 +37,12 @@
         return links.filter(item => item.visible())
     })
 
-    function setLinkActive(link: any){
+    const setLinkActive = (link: any) => {
         showSidebar.value = false
         router.push( {name: link.route} )
     }
 
-    function isLinkActive(link: any){
+    const isLinkActive = (link: any) => {
         return useRoute().name == link.route
     }
 
@@ -89,7 +89,7 @@
                 </va-badge>
                 <va-navbar-item class="toolbar_item"></va-navbar-item>
 
-                <va-avatar class="toolbar_item" color="warning" size="small" v-if="userStore.user">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
+                <va-avatar class="toolbar_item" color="warning" size="small" v-if="userStore.user" @click="router.push({name: 'profile'})">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
             </va-app-bar>
         </template>
 

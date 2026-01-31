@@ -17,6 +17,10 @@ const router = createRouter({
                     component: () => import('@/pages/Rating.vue'),
                     meta: { requiresAuth: true },
                 },
+                {   path: 'profile', name: 'profile',
+                    component: () => import('@/pages/Profile.vue'),
+                    meta: { requiresAuth: true },
+                },
                 {
                     path: 'accent', name: 'accent',
                     component: () => import('@/pages/Accent.vue'),

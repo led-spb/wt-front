@@ -65,17 +65,23 @@
             }else{
                 result.push(letter.selected)
             }
-
+            
         }
         return result.join('')
     })
 
-    const displayVariants = (variants: string[]): string[] => {
-        const filtered = variants.filter( (item) => item != "_" && item != "" )
-        if( filtered.length != variants.length ){
-            return filtered.map( (item) => item+"?" )
+    const mapVariantChars = (value: string): string => {
+        const replaced = encodeSpaces(value)
+        return replaced == "" ? " " : replaced
+    }
+
+    const selectVariant = (item: any, variant: string) => {
+        item.selected = variant.replace("_","")
+    }
+    const cancelChoice = (item: any) => {
+        if (typeof item.selected !== "undefined"){
+            item.selected = undefined;
         }
-        return filtered
     }
 
     const getSpellingRight = (spelling: any) => {
@@ -85,67 +91,63 @@
         return spelling.selected == getSpellingRight(spelling)
     }
 
-    const mapVariant = (variant: string): string => variant.replace('_','')
-
     const encodeSpaces = (value: any): any => {
         return value && value.replace(' ',' ')
     }
 
-    const currentSpelling = computed( () => {
-        return (model.value.spellings || []).toSorted(
-            (a: any, b: any) => {return a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)}
-        ).find(
-            (item: any) => item.selected === undefined
-        )
-    })
+    const zip = (...values: any[]) => {
+        var args = [].slice.call(values);
+        var longest = args.reduce(function(a: Array<any>, b :Array<any>){
+            return a.length > b.length ? a : b
+        }, []);
+
+        return longest.map(function(_,i){
+            return args.map(function(array){return array[i]})
+        });
+    }
 </script>
 
 
 <template>
-    <div>
-        <div class="row justify-center">
-        <div class="word-block">
-            <template v-if="isComplete">
-                <template v-for="item in letters">
-                    <template v-if="typeof item == 'string'">
-                        <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
-                    </template>
-                    <template v-else>
-                        <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
-                            <h2 class="letter letter-right">{{ encodeSpaces(item.selected) }}</h2>
-                        </div>
-                        <div class="spelling spelling-wrong" v-else>
-                            <h2 class="letter letter-wrong" v-if="item.selected">{{ encodeSpaces(item.selected) }}</h2>
-                            <h2 class="letter letter-wrong" v-else>{{ encodeSpaces(' ') }}</h2>
-                            <h2 class="letter letter-correct">{{ getSpellingRight(item) }}</h2>
-                        </div>
-                    </template>
+    <div class="word-block">
+        <template v-if="isComplete">
+            <template v-for="item in letters">
+                <template v-if="typeof item == 'string'">
+                    <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
+                </template>
+                <template v-else>
+                    <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
+                        <h2 class="letter letter-right">{{ encodeSpaces(item.selected) }}</h2>
+                    </div>
+                    <div class="spelling spelling-wrong" v-else>
+                        <h2 class="letter letter-wrong" v-if="item.selected">{{ encodeSpaces(item.selected) }}</h2>
+                        <h2 class="letter letter-wrong" v-else>{{ encodeSpaces(' ') }}</h2>
+                        <h2 class="letter letter-correct">{{ getSpellingRight(item) }}</h2>
+                    </div>
                 </template>
             </template>
 
-            <template v-else>
+        </template>
+        <template v-else>
 
-                <template v-for="item in letters">
-                    <template v-if="typeof item == 'string'">
-                        <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
-                    </template>
+            <template v-for="item in letters">
+                <template v-if="typeof item == 'string'">
+                    <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
+                </template>
 
-                    <template v-else>
-                        <div v-if='typeof item.selected !== "undefined"'>
-                            <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
+                <template v-else>
+                    <div class="spelling" v-on:click="cancelChoice(item)" v-if='typeof item.selected !== "undefined"'>
+                        <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
+                    </div>
+                    <div v-else class="spelling" :class="item.index % 2 ? 'even':''">
+                        <div class="variant-box">
+                            <h2 class="variant" v-for="variant in item.variants"
+                                @click="selectVariant(item, variant)">{{ mapVariantChars(variant) }}</h2>
                         </div>
-                        <div v-else class="spelling spelling-variant" :class="item.id == currentSpelling.id ? 'spelling-active' : ''">
-                            <h2 class="variant" v-for="variant in displayVariants(item.variants)">{{ variant }}</h2>
-                        </div>
-                    </template>
+                    </div>
                 </template>
             </template>
-        </div>
-        </div>
-        <div style="min-height: 1vh;"></div>
-        <div class="row justify-space-evenly" v-if="currentSpelling">
-            <va-button v-for="variant in currentSpelling.variants" @click="currentSpelling.selected = mapVariant(variant)">{{ variant }}</va-button>
-        </div>
+        </template>
     </div>
 </template>
 
@@ -156,31 +158,32 @@
         flex-wrap: wrap;
         align-items: center;
         user-select: none;
-        letter-spacing: 4px;
+        letter-spacing: 2px;
     }
     .letter {
-        font-size: 30px;
+        font-size: 40px;
         transform: padding .25s;
         line-height: 70px;
     }
-    .spelling {
+    .spelling{
         display: flex;
-        font-size: 20px;
-    }
-    .spelling-variant {
-        border-bottom: 2px dashed;
-        border-color: var(--va-secondary);
-    }
-    .spelling-active {
-        border-color: var(--va-danger);
+        border-bottom: 1px dashed;
     }
     .variant {
         padding: 0px 2px;
-        color: var(--va-secondary);
-        transform: translateY(25px);
+        cursor: pointer;
+        border: 1px solid;
+        border-radius: 5px;
+        transform: translateY(-20px);
+        line-height: 35px;
     }
     .even .variant {
         background-color: var(--va-background-border);
+    }
+    .variant-box {
+        margin: 0px 5px 0px 5px;
+        display: flex;     
+        font-size: 35px;
     }
     .letter-right {
         color: #14a76c;
@@ -199,7 +202,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        opacity: 1;
+        opacity: 1;        
         transform: translateY(-60%);
     }
 </style>

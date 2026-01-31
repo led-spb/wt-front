@@ -25,9 +25,7 @@
         userStore.loadUserStat()
     })
 
-    function percent(current :any, total :any){
-        return total > 0 ? Math.ceil(current/total * 100) : 0
-    }
+    const percent = (current :any, total :any) => total > 0 ? Math.ceil(current/total * 100) : 0
 </script>
 
 

@@ -40,8 +40,8 @@
         <va-divider />
 
         <va-card-content><div class="row justify-center"><word :value="word"/></div></va-card-content>
-        <va-card-content><div class="row justify-center"><SpellingExam  v-model="word" v-if="word?.spellings?.length"/></div></va-card-content>
-        <va-card-content><div class="row justify-center"><AccentExam  v-model="word" v-if="word?.accents?.length"/></div></va-card-content>
+        <va-card-content><div class="row justify-center"><spelling-exam v-model="word" v-if="word?.spellings?.length"/></div></va-card-content>
+        <va-card-content><div class="row justify-center"><accent-exam  v-model="word" v-if="word?.accents?.length"/></div></va-card-content>
     </va-card>
 </template>
 

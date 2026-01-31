@@ -9,7 +9,7 @@
         return props.value?.fullword.split('')
     })
 
-    function letterClass(index :Number): String{
+    const letterClass = (index :Number): String => {
         if( props.value?.accents.includes(index) )
             return "accent"
 
