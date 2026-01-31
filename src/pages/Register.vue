@@ -65,6 +65,7 @@
 
     const notEmpty = (v: string) => Boolean(v) || 'Поле обязательно для заполнения'
     const tooShort = (size :number) => (v: string) => v.length>=size || 'Слишком короткое значение'
+    const wrongChars = (v: string) => /^[a-zA-Z][a-zA-Z0-9_]+$/.test(v) || 'Только латинские символы, цифры и _'
 </script>
 
 <template>
@@ -78,7 +79,7 @@
             <va-card-title>Регистрация</va-card-title>
             <va-card-content>
                 <va-form ref="registerForm">
-                <va-input label="Логин" v-model="form.login" class="row" :rules="[notEmpty, tooShort(4)]"/>
+                <va-input label="Логин" v-model="form.login" class="row" :rules="[notEmpty, tooShort(4), wrongChars]"/>
                 <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[notEmpty, tooShort(6)]"/>
                 <va-input label="Поворите пароль" v-model="form.retype" type="password" class="row"
                    :rules="[notEmpty, (v) => v == form.password || 'Пароли должны совпадать']"/>
