@@ -68,7 +68,9 @@
                 return Promise.reject(error)
             }
         )
-        userStore.loadUserInfo()
+        if( authStore.accessToken ){
+            userStore.loadUserInfo()
+        }
     })
 </script>
 

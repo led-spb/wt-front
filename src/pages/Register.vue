@@ -1,9 +1,15 @@
 <script setup lang="ts">
     import { onMounted, ref, computed } from 'vue';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+
     import { usersApi } from '@/api/users';
+    import { useToast } from 'vuestic-ui';
+    import { useAuthStore } from '@/stores';
 
     const route = useRoute()
+    const router = useRouter()
+    const toastManager = useToast()
+    const authStore = useAuthStore()
 
     const invite = ref({
         hash: "",
@@ -20,6 +26,30 @@
 
     })
 
+    const register = () => {
+        const login = form.value.login
+        const password = form.value.password
+
+        usersApi.registerUser(
+            login,
+            password,
+            invite.value.hash
+        ).then( (status) => {
+            if( !status ){
+                toastManager.notify({
+                    message: 'Не удалось зарегистрировать пользователя, имя уже занято',
+                    color: "warning",
+                })
+            }else{
+                usersApi.getToken(login, password).then( (data) => {
+                    localStorage.setItem('username', login)
+                    authStore.setAccessToken(data.access_token);
+                    router.push({name: "home"})
+                })
+            }
+        })
+    }
+
     onMounted(() => {
         const invite_hash = String(route.params.invite)
         invite.value.hash = invite_hash
@@ -30,11 +60,15 @@
             }
         )
     })
+
+    const notEmpty = (v: string) => Boolean(v) || 'Поле обязательно для заполнения'
+    const tooShort = (size :number) => (v: string) => v.length>=size || 'Слишком короткое значение'
+
 </script>
 
 <template>
     <template v-if="!isInviteValid">
-        <va-alert color="info"
+        <va-alert color="warning"
             description="Регистрация новых пользователей недоступна"
         />
     </template>
@@ -42,14 +76,14 @@
         <va-card class="item">
             <va-card-title>Регистрация</va-card-title>
             <va-card-content>
-                <va-input label="Логин" v-model="form.login" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
-                <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
-                <va-input label="Поворите пароль" v-model="form.retype" type="password" class="row" 
-                   :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения', (v) => v == form.password || 'Пароли должны совпадать']"/>
+                <va-input label="Логин" v-model="form.login" class="row" :rules="[notEmpty, tooShort(4)]"/>
+                <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[notEmpty, tooShort(6)]"/>
+                <va-input label="Поворите пароль" v-model="form.retype" type="password" class="row"
+                   :rules="[notEmpty, (v) => v == form.password || 'Пароли должны совпадать']"/>
             </va-card-content>
             <va-card-actions align="right">
                 <va-button preset="secondary">Отмена</va-button>
-                <va-button>Регистрация</va-button>
+                <va-button @click="register">Регистрация</va-button>
             </va-card-actions>
         </va-card>
     </template>

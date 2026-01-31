@@ -60,7 +60,7 @@
     <common-task class="item"
         title="Ударения" 
         v-model:word="wordsStore.currentWord" v-model:statistics="statistics" v-model:task="task"
-        :tags="tags" :rules="currentRuleList"
+        :tags="tags" :rules="currentRuleList" :total="wordsStore.totalWords" :current="wordsStore.countWord"
         @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord">
         <accent-exam v-model="wordsStore.currentWord"></accent-exam>
     </common-task>

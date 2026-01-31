@@ -68,7 +68,7 @@
         v-model:statistics="statistics" 
         v-model:word="wordsStore.currentWord" 
         v-model:task="task"
-        :tags="tags" :rules="currentRuleList"
+        :tags="tags" :rules="currentRuleList" :total="wordsStore.totalWords" :current="wordsStore.countWord"
         @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord" @report="sendUserRport">
         <spelling-exam v-model="wordsStore.currentWord"></spelling-exam>
     </common-task>

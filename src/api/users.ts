@@ -40,7 +40,7 @@ const usersApi = {
             method: 'get',
             url: 'user/progress',
         })
-        return response.data        
+        return response.data
     },
 
     async getUserTrobles(){
@@ -48,7 +48,7 @@ const usersApi = {
             method: 'get',
             url: 'user/troubles',
         })
-        return response.data        
+        return response.data
     },
 
     async getUserRating() {
@@ -67,7 +67,7 @@ const usersApi = {
         })
     },
 
-    async checkInvite(invite :String): Promise<Boolean> {
+    async checkInvite(invite :String): Promise<boolean> {
         const response = await axiosInstance({
             method: 'get',
             url: 'invites/'+String(invite)
@@ -83,6 +83,21 @@ const usersApi = {
                 word: word_id
             }
         })
+    },
+
+    async registerUser(
+        login: string, password: string, invite: string
+    ): Promise<boolean> {
+        const response = await axiosInstance({
+            method: 'post',
+            url: 'user/register',
+            data: { login, password, invite },
+
+            validateStatus: (status) => {
+                return status == 204 || status == 400
+            }
+        })
+        return response.status == 204
     },
 }
 

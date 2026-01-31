@@ -18,6 +18,8 @@
         title: { type: String, default: "" },
         tags: { type: Array<any>, default: []},
         rules: { type: Array<any>, default: []},
+        current: { type: Number, default: 0},
+        total: {type: Number, default: 0},
     })
 
     const emit = defineEmits(['complete', 'next', 'start', 'report']);
@@ -64,7 +66,12 @@
                     <rule :value="rule"/>
                 </div>
                 <va-divider/>
+                <template v-if="props.total > 0">
+                    <va-progress-bar size="small" class="progress" :model-value="props.current / props.total * 100"></va-progress-bar>
+                    <div class="row" style="min-height: 1vh;"></div>
+                </template>
                 <div class="row">
+                    
                     <va-button preset="secondary" @click="showRules = true" :disabled="!props.rules || props.rules.length == 0 || showRules">Правило</va-button>
                     <va-spacer/>
                     <va-button :disabled="inProcess" class="primary" icon-right="arrow_forward" v-on:click="emit('next')">Дальше</va-button>
@@ -104,3 +111,9 @@
         </va-card-content>
     </va-card>
 </template>
+
+<style>
+.progress {
+    --va-progress-bar-transition: 0.5s;
+}
+</style>
