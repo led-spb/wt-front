@@ -15,30 +15,31 @@
 </script>
 
 <template>
-    <va-card class="item">
-        <va-card-title><va-icon name="person" class="card-icon"/>Профиль</va-card-title>
-            <va-card-title><va-icon name="star" class="card-icon"/>Цель на сегодня</va-card-title>
+    <va-card class="item" v-if="userStore.user">
+            <va-card-title><va-icon name="person" class="card-icon"/>Информация</va-card-title>
             <va-card-content>
-                <va-progress-bar :model-value="percent(userStore.progress?.today?.learned, userStore.progress?.today.total)" showPercent></va-progress-bar>
-                <va-list-item>
-                    <va-list-item-section></va-list-item-section>
-                    <va-list-item-section icon>{{ userStore.progress?.today?.learned }} / {{ userStore.progress?.today.total }}</va-list-item-section>
-                </va-list-item>
-                <va-list-item v-if="userStore.progress?.series">
-                    <va-list-item-section>Серия</va-list-item-section>
-                    <va-list-item-section icon><va-chip color="success" size="small">{{ userStore.progress?.series }} дней</va-chip></va-list-item-section>
-                </va-list-item>
+                <va-input class="row input" label="Отображаемое имя" :model-value="userStore.user?.name"></va-input>
+                <va-button preset="primary" border-color="primary">Сменить пароль</va-button>
+                <va-divider/>
             </va-card-content>
-            <va-card-title><va-icon name="hotel_class" class="card-icon"/>Всего изучено</va-card-title>
+            <va-card-title><va-icon name="star" class="card-icon"/>Мои цели</va-card-title>
             <va-card-content>
-                <va-progress-bar :model-value="percent(userStore.progress?.overall?.learned, userStore.progress?.overall?.total)" showPercent></va-progress-bar>
-                <va-list-item>
-                    <va-list-item-section></va-list-item-section>
-                    <va-list-item-section icon>{{ userStore.progress?.overall?.learned }} / {{ userStore.progress?.overall?.total }}</va-list-item-section>
-                </va-list-item>
+                <va-slider label="Изучить слов в день" pins track-label-visible :min="20" :max="100" :step="10" class="row iput" :model-value="userStore.user?.daily_goal"></va-slider>
+                <va-divider/>
             </va-card-content>
+            <va-card-title><va-icon name="notifications_active" class="card-icon"/>Оповещения</va-card-title>
+            <va-card-content>
+                <va-divider/>
+            </va-card-content>
+            <va-card-actions align="right">
+                <va-button color="secondary">Отмена</va-button>
+                <va-button color="primary">Сохранить</va-button>
+            </va-card-actions>
     </va-card>
 </template>
 
 <style>
+    .input {
+        margin-bottom: 0.5rem;
+    }
 </style>
