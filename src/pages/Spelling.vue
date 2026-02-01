@@ -12,7 +12,7 @@
     });
     const task = ref({
         count: 20,
-        errors: 50,
+        errors: 30,
         level: 10,
         tags: Array(),
     })

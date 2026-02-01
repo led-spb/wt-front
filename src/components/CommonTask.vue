@@ -10,7 +10,7 @@
         {type: Object, default: {success: 0, failed: 0}}
     );
     const task = defineModel('task',
-        {type: Object, default: {count: 20, errors: 50, level: 10, tags: Array<any>}}
+        {type: Object, default: {count: 20, errors: 30, level: 10, tags: Array<any>}}
     );
     const showRules = ref(false);
 
@@ -85,8 +85,6 @@
             </template>
             <template v-else>
                 <va-form>
-                    <va-slider label="Уровень" pins track-label-visible :min="1" :max="10" v-model="task.level"></va-slider>
-                    <div class="row" style="min-height: 2vh;"></div>
                     <va-select label="Темы" multiple 
                         :options="props.tags" 
                         text-by="desciption" 

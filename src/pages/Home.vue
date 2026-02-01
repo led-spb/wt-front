@@ -13,7 +13,7 @@
     ])
     const userStore = useUsersStore()
     const stat = computed(() => {
-        return userStore.statistics(currentStatOffset.value || 0)
+        return userStore.aggregateStat(currentStatOffset.value || 0)
     })
     const topFailed = computed( () => {
         return userStore.troubles

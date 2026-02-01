@@ -57,7 +57,7 @@ export const useUsersStore = defineStore('users', () => {
     }
 
     const dailyStats = computed(() => {
-        return (offset:number) => {
+        return (offset :number) => {
             const fromDate = new Date()
             fromDate.setHours(0)
             fromDate.setMinutes(0)
@@ -69,5 +69,5 @@ export const useUsersStore = defineStore('users', () => {
         }
     })
 
-    return { user, progress, troubles, statistics: dailyStats, rating, loadUserInfo, loadUserStat, loadUserRating}
+    return { user, progress, troubles, statistics, aggregateStat: dailyStats, rating, loadUserInfo, loadUserStat, loadUserRating}
 })

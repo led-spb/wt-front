@@ -57,8 +57,11 @@
             (error) => {
                 console.log('Global request handler', error);
 
-                if( error.status == 401 )
-                    return router.push( {name: 'login'} )
+                if( error.response && error.response.status == 401 ){
+                    authStore.setAccessToken(null)
+                    router.push({name: 'login'})
+                    return Promise.reject(error)
+                }
 
                 toastManager.notify({
                     message: 'Ошибка при обработке запроса на сервере',
@@ -89,7 +92,7 @@
                 </va-badge>
                 <va-navbar-item class="toolbar_item"></va-navbar-item>
 
-                <va-avatar class="toolbar_item" color="warning" size="small" v-if="userStore.user" @click="router.push({name: 'profile'})">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
+                <va-avatar class="toolbar_item" color="warning" size="small" v-if="userStore.user">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
             </va-app-bar>
         </template>
 

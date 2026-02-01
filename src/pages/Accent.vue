@@ -13,7 +13,7 @@
     const task = ref({
         count: 20,
         level: 10,
-        errors: 50,
+        errors: 30,
         tags: [],
     })
     const wordsStore = useWordsStore()

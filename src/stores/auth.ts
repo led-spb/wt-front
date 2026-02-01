@@ -11,10 +11,10 @@ export const useAuthStore = defineStore('auth', () => {
         return !!accessToken.value
     })
 
-    function setAccessToken(token: string){
+    function setAccessToken(token: string|null){
         accessToken.value = token
 
-        if( isAuthentificated ){
+        if( token && isAuthentificated ){
             localStorage.setItem('accessToken', token)
         }else{
             localStorage.removeItem('accessToken')

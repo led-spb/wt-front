@@ -1,9 +1,17 @@
 <script setup lang="ts">
+    import { computed, onMounted } from 'vue';
     import { useUsersStore } from '@/stores';
 
     const userStore = useUsersStore()
 
     const percent = (current :number, total :number) => total > 0 ? Math.ceil(current/total * 100) : 0
+    const data = computed(() => {
+        return userStore.statistics.map( (item :any) => item.total)
+    })
+
+    onMounted(() => {
+        userStore.loadUserStat()
+    })
 </script>
 
 <template>
