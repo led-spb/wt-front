@@ -99,6 +99,38 @@ const usersApi = {
         })
         return response.status == 204
     },
+
+    async getSubscriptionKey(): Promise<string> {
+        const response = await axiosInstance({
+            method: 'get', url: 'user/subscription/key'
+        })
+
+        return response.data?.publicKey;
+    },
+
+    async updateUserInfo(
+        name: string|undefined,
+        dailyGoal: number|undefined,
+    ): Promise<any> {
+        const response = await axiosInstance({
+            method: 'put',
+            url: 'user',
+            data: {name, dailyGoal}
+        })
+
+        return response.data
+    },
+
+    async setUserNotifyInfo(
+        notifyInfo: string|null
+    ){
+        const response = await axiosInstance({
+            method: 'put',
+            url: 'user',
+            data: {notifyInfo}
+        })
+        return response.data
+    },
 }
 
 export { usersApi }
