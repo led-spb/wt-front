@@ -1,3 +1,7 @@
+resolver 127.0.0.11 valid=1m ipv6=off;
+resolver_timeout 2s;
+server_tokens off;
+
 server {
     listen 80;
 
