@@ -1,26 +1,28 @@
 <script setup lang="ts">
     import { computed } from 'vue';
+    import type { Word } from '@/api/words';
 
-    const model = defineModel({
-        type: Object
-    })
+    const model = defineModel<Word>()
 
     const letters = computed( () => {
-        return model.value.fullword.split('')
+        return model.value?.fullword.split('')
     })
     const vowels = computed( () => 'аеёиоуыэюя'.split(''))
     const isDone = computed( () => typeof model.value?.selected !== 'undefined' )
 
-    function selectVariant(index :Number){
-        model.value.selected = index
-        model.value.result = model.value.accents.includes(index)
+    function selectVariant(index :number){
+        if( model.value ){
+            model.value.selected = index
+            model.value.result = model.value.accents.includes(index)
+        }
     }
-    function letterClass(index: Number): String|null {
-        if( model.value.accents.includes(index) )
-            return "corrent"
-
-        if( index == model.value.selected ){
-            return model.value.accents.includes(index) ? "corrent" : "wrong"
+    function letterClass(index: number): String|null {
+        if( model.value ){
+            if( model.value.accents.includes(index) )
+                return "corrent"
+            if( index == model.value.selected ){
+                return model.value.accents.includes(index) ? "corrent" : "wrong"
+            }
         }
         return null
     }

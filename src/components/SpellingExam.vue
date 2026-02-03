@@ -1,17 +1,18 @@
 <script setup lang="ts">
     import { computed, watch } from 'vue';
+    import type { Word } from '@/api/words';
 
-    const model = defineModel(
-        {type: Object}
-    );
+    const model = defineModel<Word>();
     const emit = defineEmits(['complete']);
 
     const letters = computed(() => {
-        const word = model.value.fullword;
+        if( !model.value ) return
+
+        const word = model.value?.fullword;
         const result = new Array();
         let position = 0;
 
-        const spellings = (model.value.spellings || []).toSorted(
+        const spellings = [...(model.value.spellings || [])].sort(
             (a: any, b: any) => {return a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)}
         )
 
@@ -32,14 +33,14 @@
     });
 
     const isDone = computed(() =>{
-        for(const part of model.value.spellings || [])
+        for(const part of model.value?.spellings || [])
             if( part.selected === undefined )
                 return false
         return true
     })
 
     const isComplete = computed(() => {
-        return isDone.value && typeof model.value.result !== "undefined"
+        return isDone.value && typeof model.value?.result !== "undefined"
     })
 
     var timeoutId = -1;
@@ -52,20 +53,20 @@
     })
 
     const emitCompleteEvent = () => {
-        if( isDone.value ){
+        if( model.value && isDone.value ){
             model.value.result = resultWord.value == model.value.fullword
         }
     }
 
     const resultWord = computed(() => {
+        if( !model.value ) return
         const result = [];
-        for (const letter of letters.value) {
+        for (const letter of letters.value || []) {
             if( typeof(letter) == 'string' ){
                 result.push(letter)
             }else{
                 result.push(letter.selected)
             }
-
         }
         return result.join('')
     })
@@ -79,6 +80,7 @@
     }
 
     const getSpellingRight = (spelling: any) => {
+        if( !model.value ) return
         return model.value.fullword.slice( spelling.position, spelling.position+spelling.length )
     }
     const isSpellingOk = (spelling: any): Boolean => {
@@ -92,7 +94,9 @@
     }
 
     const currentSpelling = computed( () => {
-        return (model.value.spellings || []).toSorted(
+        if( !model.value ) return
+
+        return [...(model.value.spellings || [])].sort(
             (a: any, b: any) => {return a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)}
         ).find(
             (item: any) => item.selected === undefined
@@ -134,7 +138,7 @@
                         <div v-if='typeof item.selected !== "undefined"'>
                             <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
                         </div>
-                        <div v-else class="spelling spelling-variant" :class="item.id == currentSpelling.id ? 'spelling-active' : ''">
+                        <div v-else class="spelling spelling-variant" :class="item.id == currentSpelling?.id ? 'spelling-active' : ''">
                             <h2 class="variant" v-for="variant in displayVariants(item.variants)">{{ variant }}</h2>
                         </div>
                     </template>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
     import { onMounted, computed } from 'vue';
     import { useUsersStore } from '@/stores';
+    import type { UserRating } from '@/api/rating';
 
     const userStore = useUsersStore();
-    function displayPercent(item: any){
+    const percent = (item: any) => {
         return item.total == 0 ? 0 : Math.ceil(item.success / item.total * 1000)/10
     }
 
@@ -12,19 +13,22 @@
     })
 
     const ratingByProgress = computed(() => {
-        return userStore.rating?.toSorted( (a :any, b :any) => {
+        return <UserRating[]>[...userStore.rating||[]].sort(
+            (a :UserRating, b :UserRating) => {
             return b.progress_pct - a.progress_pct
-        })
+            }
+        )
     })
 
     const ratingBySuccess = computed(() => {
-        return userStore.rating?.toSorted( (a :any, b :any) => {
-            const a_value = a.total == 0 ? 0 : a.success / a.total
-            const b_value = b.total == 0 ? 0 : b.success / b.total
-            return b_value - a_value
-        })
+        return <UserRating[]>[...userStore.rating||[]].sort(
+             (a :UserRating, b :UserRating) => {
+                const a_value = a.total == 0 ? 0 : a.success / a.total
+                const b_value = b.total == 0 ? 0 : b.success / b.total
+                return b_value - a_value
+            }
+        )
     })
-
 </script>
 
 
@@ -71,7 +75,7 @@
                         <td>{{ item.user.name }}</td>
                         <td class="va-text-right">{{ item.success }}</td>
                         <td class="va-text-right">{{ item.success + item.failed }}</td>
-                        <td class="va-text-right"><span v-if="item.total == 0">-</span><span v-else>{{ displayPercent(item) }}</span></td>
+                        <td class="va-text-right"><span v-if="item.total == 0">-</span><span v-else>{{ percent(item) }}</span></td>
                         </tr>
                     </tbody>
                     </table>

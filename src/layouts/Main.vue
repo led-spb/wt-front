@@ -48,6 +48,7 @@
 
     watch(() => authStore.accessToken, (value, oldValue) => {
         userStore.loadUserInfo()
+        userStore.loadUserProgress()
     })
 
     onMounted(() => {
@@ -73,6 +74,7 @@
         )
         if( authStore.accessToken ){
             userStore.loadUserInfo()
+            userStore.loadUserProgress()
         }
     })
 </script>
@@ -103,7 +105,7 @@
 
         <template #left>
 
-            <va-sidebar v-model="showSidebar">
+            <va-sidebar v-model="showSidebar" closeOnClickOutside>
                 <va-sidebar-item v-for="(item, idx) in panelItems" 
                     :active="isLinkActive(item)" @click="setLinkActive(item)">
                     <va-sidebar-item-content>

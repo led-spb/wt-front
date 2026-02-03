@@ -12,7 +12,7 @@
 </script>
 
 <template>
-     <div v-html="formatted"/>
+     <div v-html="formatted"></div>
 </template>
 
 <style>

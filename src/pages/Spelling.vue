@@ -1,15 +1,17 @@
 <script setup lang="ts">
     import { ref, computed, onMounted } from 'vue';
-    import { wordsApi } from '@/api/words';
-    import { usersApi } from '@/api/users';
-    import { useWordsStore, useTagsStore, useRuleStore } from '@/stores';
+
+    import { axiosInstance } from '@/api/config';
+    import { WordsApiService, type Word } from '@/api/words';
+
+    import { useWordsStore, useTagsStore, useRuleStore, useStatisticsStore } from '@/stores';
 
     import CommonTask from '@/components/CommonTask.vue';
     import SpellingExam from '@/components/SpellingExam.vue';
 
-    const statistics = ref({
-        success: 0, failed: 0
-    });
+    
+    const wordsApiService = new WordsApiService(axiosInstance)
+
     const task = ref({
         count: 20,
         errors: 30,
@@ -19,6 +21,7 @@
     const wordsStore = useWordsStore()
     const tagsStore = useTagsStore()
     const ruleStore = useRuleStore()
+    const statisticsStore = useStatisticsStore()
 
     const tags = computed(() => {
         return tagsStore.tags?.filter( (tag :any) => {
@@ -34,27 +37,24 @@
     })
 
     const startExam = () => {
-        statistics.value = {success: 0, failed: 0}
+        statisticsStore.clear()
 
-        wordsApi.getSpellingTask(task.value.tags, task.value.count, task.value.level || 10, task.value.errors)
-            .then( data => {
+        wordsApiService.getSpellingTask(task.value.tags, task.value.count, task.value.errors)
+            .then( (data: Word[]) => {
                 wordsStore.setWords(data)
                 wordsStore.nextWord()
             })
     }
 
     const onCompleteWord = (result: boolean) => {
-        if( result ) {
-            usersApi.sendUserStat([wordsStore.currentWord.id], [])
-        } else {
-            usersApi.sendUserStat([], [wordsStore.currentWord.id])
+        if( wordsStore.currentWord ){
+            if( result ) statisticsStore.storeSuccess(wordsStore.currentWord)
+            else statisticsStore.storeFailed(wordsStore.currentWord)
         }
     }
 
     const sendUserRport = () => {
-        if( wordsStore.currentWord?.id ){
-            usersApi.sendReport(wordsStore.currentWord?.id)
-        }
+        if( wordsStore.currentWord ) wordsApiService.sendWordReport(wordsStore.currentWord)
     }
 
     onMounted(() => {
@@ -65,14 +65,12 @@
 <template>
     <common-task class="item"
         title="Орфограммы/Словарные слова" 
-        v-model:statistics="statistics" 
-        v-model:word="wordsStore.currentWord" 
+        v-model:statistics="statisticsStore.statistic"
+        v-model:word="wordsStore.currentWord"
         v-model:task="task"
         :tags="tags" :rules="currentRuleList" :total="wordsStore.totalWords" :current="wordsStore.countWord"
         @start="startExam" @next="wordsStore.nextWord" @complete="onCompleteWord" @report="sendUserRport">
+
         <spelling-exam v-model="wordsStore.currentWord"></spelling-exam>
     </common-task>
 </template>
-
-<style scoped>
-</style>

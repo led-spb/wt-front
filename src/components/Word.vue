@@ -1,22 +1,23 @@
 +<script setup lang="ts">
     import { computed } from 'vue';
+    import type { Word } from '@/api/words';
 
-    const props = defineProps({
-        value: { type: Object }
-    })
+    interface IWordProps {
+        value: Word
+    }
+    const props = defineProps<IWordProps>()
 
     const letters = computed(() => {
         return props.value?.fullword.split('')
     })
 
-    const letterClass = (index :Number): String => {
+    const letterClass = (index :number): String => {
         if( props.value?.accents.includes(index) )
             return "accent"
 
         for( var spelling of props.value?.spellings )
             if( index >= spelling.position && index < spelling.position+spelling.length )
                 return "spelling"
-
         return ""
     }
 </script>

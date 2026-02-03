@@ -1,25 +1,28 @@
 <script setup lang="ts">
-    import {ref} from 'vue'
-    import {useRouter, useRoute} from 'vue-router'
-    import {usersApi} from '@/api/users'
-    import {useAuthStore} from '@/stores';
-    import {useToast } from 'vuestic-ui';
+    import { ref} from 'vue'
+    import { useRouter, useRoute } from 'vue-router'
+    import { axiosInstance } from '@/api/config';
+    import { UsersApiService, type UserToken } from '@/api/users';
+
+    import { useAuthStore } from '@/stores';
+    import { useToast } from 'vuestic-ui';
 
     const auth = useAuthStore()
     const router = useRouter()
     const route = useRoute()
     const toastManager = useToast()
+    const usersApiService = new UsersApiService(axiosInstance)
 
     const form = ref({
         login: localStorage.getItem('username') || '',
         password: '',
     })
 
-    async function onLogin(){
-        usersApi.getToken(form.value.login, form.value.password)
-            .then((data) => {
+    const onLogin = () => {
+        usersApiService.getToken(form.value.login, form.value.password)
+            .then((token: UserToken) => {
                 localStorage.setItem('username', form.value.login)
-                auth.setAccessToken(data.access_token);
+                auth.setAccessToken(token.accessToken);
 
                 const redirectPath = route.query.redirect;
                 if( redirectPath ){

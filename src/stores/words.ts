@@ -1,10 +1,11 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { type Word } from '@/api/words'
 
 
 export const useWordsStore = defineStore('words', () => {
-    const word = ref()
-    const wordsBank = ref([])
+    const word = ref<Word>()
+    const wordsBank = ref<Word[]>([])
     const totalWords = ref(0)
     const countWord = ref(0)
 
@@ -14,7 +15,7 @@ export const useWordsStore = defineStore('words', () => {
         countWord.value = Math.min(countWord.value+1, totalWords.value)
     }
 
-    function setWords(values: Array<never>){
+    function setWords(values: Word[]){
         word.value = undefined
         wordsBank.value = values
         

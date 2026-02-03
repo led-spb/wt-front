@@ -1,0 +1,46 @@
+import type { User, UserToken, UserProgress, UserSubscriptionInfo } from "./users-api.models"
+import type { AxiosInstance } from "axios"
+
+
+export class UsersApiService {
+    constructor (private axiosInstance: AxiosInstance){}
+
+    async getCurrentUser(): Promise<User> {
+        const response = await this.axiosInstance.get<User>('user')
+        return response.data
+    }
+
+    async getToken(login :string, password: string ): Promise<UserToken> {
+        const response = await this.axiosInstance<UserToken>({
+            method: 'post',
+            url: 'auth/token',
+            data: { login, password },
+
+            validateStatus: (status: number) => {
+                return status == 200 || status == 401
+            }
+        })
+        if( response.status == 401 )
+            throw "User unauthorized"
+        return response.data
+    }
+
+    async getUserProgress(): Promise<UserProgress>{
+        const response = await this.axiosInstance.get<UserProgress>('user/progress')
+        return response.data
+    }
+
+    async updateUserInfo(user :User): Promise<User> {
+        const response = await this.axiosInstance.put<User>(
+            'user',
+            {name: user.name, dailyGoal: user.dailyGoal, notifyInfo: user.notifyInfo}
+        )
+        return response.data
+    }
+
+    async getSubscriptionInfo(): Promise<UserSubscriptionInfo> {
+        const response = await this.axiosInstance.get<UserSubscriptionInfo>('user/subscription/key')
+        return response.data
+    }
+
+}

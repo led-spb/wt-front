@@ -1,0 +1,25 @@
+export type Accent = number
+
+export interface Spelling {
+    id: number
+    index: number
+    position: number
+    length: number
+    variants: string[]
+    selected: string
+}
+
+export interface Word {
+    id: number
+    fullword: string
+    context: string
+    description: string
+    selected: number
+    result: boolean
+
+    rules: any[]
+    tags: any[]
+
+    accents: Accent[]
+    spellings: Spelling[]
+}

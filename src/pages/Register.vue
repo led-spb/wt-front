@@ -2,7 +2,10 @@
     import { onMounted, ref, computed } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
 
-    import { usersApi } from '@/api/users';
+    import { axiosInstance } from '@/api/config';
+    import { UsersApiService } from '@/api/users';
+    import { InviteApiService, type UserRegister } from '@/api/invite';
+
     import { useToast, useForm } from 'vuestic-ui';
     import { useAuthStore } from '@/stores';
 
@@ -10,6 +13,9 @@
     const router = useRouter()
     const toastManager = useToast()
     const authStore = useAuthStore()
+
+    const usersApiService = new UsersApiService(axiosInstance)
+    const inviteApiService = new InviteApiService(axiosInstance)
 
     const {isValid} = useForm('registerForm')
 
@@ -32,23 +38,26 @@
         const login = form.value.login
         const password = form.value.password
 
-        usersApi.registerUser(
-            login,
-            password,
-            invite.value.hash
-        ).then( (status) => {
+        inviteApiService.registerUser(
+            <UserRegister>{
+                login, password, invite: invite.value.hash
+            }
+        ).then( (status: any) => {
             if( !status ){
                 toastManager.notify({
                     message: 'Не удалось зарегистрировать пользователя, возможно имя уже занято',
                     color: "warning",
                 })
             }else{
-                usersApi.getToken(login, password).then( (data) => {
+                usersApiService.getToken(login, password).then( (data) => {
                     localStorage.setItem('username', login)
-                    authStore.setAccessToken(data.access_token);
+
+                    authStore.setAccessToken(data.accessToken);
                     router.push({name: "home"})
                 })
             }
+        }).finally( () => {
+            
         })
     }
 
@@ -56,7 +65,7 @@
         const invite_hash = String(route.params.invite)
         invite.value.hash = invite_hash
 
-        usersApi.checkInvite(invite_hash).then(
+        inviteApiService.checkInvite(invite_hash).then(
             status => {
                 invite.value.status = !!status
             }

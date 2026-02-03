@@ -1,7 +1,8 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted, watch } from 'vue';
-    import { wordsApi } from '@/api/words';
+    import { ref } from 'vue';
   
+    import { axiosInstance } from '@/api/config';
+    import { WordsApiService } from '@/api/words';
     import AccentExam from '@/components/AccentExam.vue';
     import SpellingExam from '@/components/SpellingExam.vue';
     import Word from '@/components/Word.vue';
@@ -10,20 +11,23 @@
     const word = ref()
     const searchValue = ref()
 
+    const wordsApiService = new WordsApiService(axiosInstance)
+
     const findWord = () => {
         if( searchValue.value ){
             const wordId = parseInt(searchValue.value);
             if( !Number.isNaN(wordId)) {
-                wordsApi.getWordById(wordId).then( (data) => {
+                wordsApiService.getWordById(wordId).then( (data) => {
                     word.value = data
-                })
+                } )
             }else{
-                wordsApi.getWordByName(searchValue.value).then( (data) => {
+                wordsApiService.getWordByName(searchValue.value).then( (data) => {
                     word.value = data
                 })
             }
         }
     }
+
 </script>
 
 <template>
@@ -44,6 +48,3 @@
         <va-card-content><div class="row justify-center"><accent-exam  v-model="word" v-if="word?.accents?.length"/></div></va-card-content>
     </va-card>
 </template>
-
-<style scoped>
-</style>

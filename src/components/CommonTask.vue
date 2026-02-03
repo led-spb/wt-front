@@ -2,10 +2,9 @@
     import { ref, computed, watch } from 'vue';
     import TaskStatistic from './TaskStatistic.vue';
     import Rule from './Rule.vue';
+    import type { Word } from '@/api/words';
 
-    const word = defineModel('word', {
-        type: Object,
-    })
+    const word = defineModel<Word>('word', {})
     const statistics = defineModel( 'statistics',
         {type: Object, default: {success: 0, failed: 0}}
     );

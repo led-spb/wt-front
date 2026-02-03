@@ -1,40 +1,54 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { usersApi } from '@/api/users'
+import { axiosInstance } from '@/api/config'
+
+import { UsersApiService } from '@/api/users'
+import { StatisticsApiService } from '@/api/statistics'
+import { RatingApiService, type UserRating } from '@/api/rating'
+import type { User, UserProgress } from '@/api/users'
+import type { UserDayStatistics, UserWordStatistics } from '@/api/statistics'
 
 
 export const useUsersStore = defineStore('users', () => {
-    const user = ref()
-    const statistics = ref()
-    const progress = ref()
-    const troubles = ref()
-    const rating = ref()
+    const user = ref<User>()
+    const statistics = ref<UserDayStatistics[]>()
+    const progress = ref<UserProgress>()
+    const troubles = ref<UserWordStatistics[]>()
+    const rating = ref<UserRating[]>()
 
-    function loadUserInfo(){
-        usersApi.getCurrentUser().then( data => {
-            user.value = data
-            localStorage.setItem('user', user.value.name)
+    const userApiService = new UsersApiService(axiosInstance)
+    const ratingApiService = new RatingApiService(axiosInstance)
+    const statisticsApiService = new StatisticsApiService(axiosInstance)
+
+    const setUserInfo = (info: User) => {
+        user.value = info
+    }
+    const loadUserInfo = () => {
+        userApiService.getCurrentUser().then( (value: User) => {
+            user.value = value
+            localStorage.setItem('user', value.name)
         })
-        usersApi.getUserProgress().then( data => {
-            progress.value = data
+    }
+
+    function loadUserProgress(){
+        userApiService.getUserProgress().then( (value: UserProgress) => {
+            progress.value = value
         })
     }
 
     function loadUserStat(){
-        usersApi.getUserStat().then( data => {
-            statistics.value = data.map( (value: any) => {
-                value.recorded_at = new Date(value.recorded_at)
-                return value
-            })
+        statisticsApiService.getUserStat().then( (data: UserDayStatistics[]) => {
+            statistics.value = data
         })
-        usersApi.getUserTrobles().then( data => {
+
+        statisticsApiService.getUserTrobles().then( (data: UserWordStatistics[]) => {
             troubles.value = data
         })
     }
 
     function loadUserRating(){
-        usersApi.getUserRating().then( data => {
-            rating.value = data
+        ratingApiService.getUserRating().then( (value: UserRating[]) => {
+            rating.value = value
         })
     }
 
@@ -69,5 +83,5 @@ export const useUsersStore = defineStore('users', () => {
         }
     })
 
-    return { user, progress, troubles, statistics, aggregateStat: dailyStats, rating, loadUserInfo, loadUserStat, loadUserRating}
+    return { user, progress, troubles, statistics, aggregateStat: dailyStats, rating, setUserInfo, loadUserInfo, loadUserProgress, loadUserStat, loadUserRating}
 })

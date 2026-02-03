@@ -1,45 +1,53 @@
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
+
+    import { axiosInstance } from '@/api/config';
+    import { UsersApiService, type User } from '@/api/users';
     import { useUsersStore } from '@/stores';
-    import { usersApi } from '@/api/users';
+
     import { NotificationManager } from '@/lib/Notification';
     import { useToast } from 'vuestic-ui';
 
-    const userStore = useUsersStore()
-    const toastManager = useToast()
 
-    const userData = ref({
-        name: undefined,
-        dailyGoal: undefined,
-    })
+    const usersApiService = new UsersApiService(axiosInstance);
+    const userStore = useUsersStore();
+    const toastManager = useToast();
+
+    const userData = ref(<User>{})
+
+    const computedField = <T>(field: string) => {
+        return computed({
+            get: () => {
+                return <T>({...userStore.user, ...userData.value}[field])
+            },
+            set: (value: T) => {
+                (<any>userData.value)[field] = value
+            }
+        })
+    }
+    const userName = computedField<string>('name')
+    const userDailyGoal = computedField<number>('dailyGoal')
 
     const isLoading = ref(false)
     const notifyState = ref(false)
 
-    onMounted(() => {
-        NotificationManager.hasSubscription().then( (v) => notifyState.value = v)
-        userStore.loadUserInfo()
+    const dataChanged = computed(() => {
+        return userName.value != userStore.user?.name || userDailyGoal.value != userStore.user?.dailyGoal
     })
 
-    const userName = computed({
-        get: () => userData.value.name || userStore.user?.name,
-        set: (value: any) => userData.value.name = value,
-    })
-    const userGoal = computed({
-        get: () => userData.value.dailyGoal || userStore.user?.dailyGoal,
-        set: (value :any) => userData.value.dailyGoal = value,
+    onMounted(() => {
+        NotificationManager.hasSubscription().then( (v) => notifyState.value = v)
     })
 
     const updateUserInfo = () => {
-
-        usersApi.updateUserInfo(
-            userData.value.name || userStore.user.name,
-            userData.value.dailyGoal || userStore.user.dailyGoal
-        ).then( (data) => {
-            userData.value.name = undefined;
-            userData.value.dailyGoal = undefined;
-
-            userStore.loadUserInfo()
+        isLoading.value = true
+        usersApiService.updateUserInfo(userData.value)
+            .then((data: User) => {
+                userStore.setUserInfo(data)
+                userData.value = <User>{}
+            }
+        ).finally( () => {
+            isLoading.value = false
         })
     }
 
@@ -52,13 +60,14 @@
             try{
                 if( value ){
                     if( await waitForNotifyPermissions() ){
-                        const publicKey = await usersApi.getSubscriptionKey()
+                        const subscriptionInfo = await usersApiService.getSubscriptionInfo()
 
-                        console.log('start subscription')
-                        const subscription = await NotificationManager.subscribe(publicKey)
+                        const subscription = await NotificationManager.subscribe(subscriptionInfo.publicKey)
                         console.log(subscription.toJSON())
 
-                        await usersApi.setUserNotifyInfo(JSON.stringify(subscription.toJSON()))
+                        await usersApiService.updateUserInfo(<User>{
+                            notifyInfo: JSON.stringify(subscription.toJSON())
+                        })
                         notifyState.value = !!subscription
                     }else{
                         toastManager.notify({
@@ -69,9 +78,9 @@
                 }else{
                     const subscription = await NotificationManager.getSubscription()
                     await subscription?.unsubscribe()
-                    notifyState.value = await NotificationManager.hasSubscription()
 
-                    await usersApi.setUserNotifyInfo(null)
+                    notifyState.value = await NotificationManager.hasSubscription()
+                    await usersApiService.updateUserInfo(<User>{notifyInfo: null})
                 }
             }catch(e){
                 console.error(e)
@@ -102,13 +111,13 @@
         <va-inner-loading :loading="isLoading">
             <va-card-title><va-icon name="person" class="card-icon"/>Информация</va-card-title>
             <va-card-content>
-                <va-input class="row input" label="Отображаемое имя" :model-value="userName"></va-input>
-                <va-button preset="primary" border-color="primary">Сменить пароль</va-button>
+                <va-input class="row input" label="Отображаемое имя" v-model="userName"></va-input>
+                <va-button disabled preset="primary" border-color="primary">Сменить пароль</va-button>
                 <va-divider/>
             </va-card-content>
             <va-card-title><va-icon name="star" class="card-icon"/>Мои цели</va-card-title>
             <va-card-content>
-                <va-slider label="Изучить слов в день" pins track-label-visible :min="20" :max="100" :step="10" class="row iput" v-model="userGoal"></va-slider>
+                <va-slider label="Изучить слов в день" pins track-label-visible :min="20" :max="100" :step="10" class="row iput" v-model="userDailyGoal"></va-slider>
                 <va-divider/>
             </va-card-content>
             <va-card-title><va-icon name="notifications_active" class="card-icon"/>Оповещения</va-card-title>
@@ -123,8 +132,8 @@
                 <va-divider/>
             </va-card-content>
             <va-card-actions align="right">
-                <va-button color="secondary" @click="userName=undefined, userGoal=undefined">Отмена</va-button>
-                <va-button color="primary" @click="updateUserInfo()">Сохранить</va-button>
+                <va-button :disabled="!dataChanged" color="secondary" @click="userData = <User>{}">Отмена</va-button>
+                <va-button :disabled="!dataChanged" color="primary" @click="updateUserInfo()">Сохранить</va-button>
             </va-card-actions>
         </va-inner-loading>
     </va-card>
