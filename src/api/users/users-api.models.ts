@@ -4,7 +4,6 @@ export interface User {
     login: string
     name: string
     dailyGoal: number
-    notifyInfo: string|null
 }
 
 export interface UserToken {

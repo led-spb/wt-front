@@ -7,6 +7,8 @@
 
     import { NotificationManager } from '@/lib/Notification';
     import { useToast } from 'vuestic-ui';
+    // @ts-ignore
+    import AvatarCropper from "vue-avatar-cropper";
 
 
     const usersApiService = new UsersApiService(axiosInstance);
@@ -14,6 +16,7 @@
     const toastManager = useToast();
 
     const userData = ref(<User>{})
+    const showCropper = ref(false)
 
     const computedField = <T>(field: string) => {
         return computed({
@@ -60,15 +63,14 @@
             try{
                 if( value ){
                     if( await waitForNotifyPermissions() ){
-                        const subscriptionInfo = await usersApiService.getSubscriptionInfo()
+                        const subscriptionInfo = await usersApiService.getSubscriptionKey()
 
                         const subscription = await NotificationManager.subscribe(subscriptionInfo.publicKey)
                         console.log(subscription.toJSON())
 
-                        await usersApiService.updateUserInfo(<User>{
-                            notifyInfo: JSON.stringify(subscription.toJSON())
-                        })
+                        await usersApiService.registerWebPush(subscription.toJSON())
                         notifyState.value = !!subscription
+
                     }else{
                         toastManager.notify({
                             message: 'Не выданы разрешения на отображение уведомлений',
@@ -77,10 +79,12 @@
                     }
                 }else{
                     const subscription = await NotificationManager.getSubscription()
-                    await subscription?.unsubscribe()
+                    if( subscription ){
+                        await usersApiService.unregisterWebPush(subscription.toJSON())
+                        await subscription.unsubscribe()
+                    }
 
                     notifyState.value = await NotificationManager.hasSubscription()
-                    await usersApiService.updateUserInfo(<User>{notifyInfo: null})
                 }
             }catch(e){
                 console.error(e)
@@ -103,7 +107,6 @@
         }
         return Notification.permission === 'granted'
     }
-
 </script>
 
 <template>
@@ -112,8 +115,9 @@
             <va-card-title><va-icon name="person" class="card-icon"/>Информация</va-card-title>
             <va-card-content>
                 <va-input class="row input" label="Отображаемое имя" v-model="userName"></va-input>
-                <va-button disabled preset="primary" border-color="primary">Сменить пароль</va-button>
                 <va-divider/>
+                <va-button disabled preset="primary" border-color="primary" @click="showCropper=true">Изменить фото</va-button>
+                <avatar-cropper v-model="showCropper" :cropper-options="{ zoomable: true }" :labels='{submit: "Ok", cancel: "Отмена"}'></avatar-cropper>
             </va-card-content>
             <va-card-title><va-icon name="star" class="card-icon"/>Мои цели</va-card-title>
             <va-card-content>

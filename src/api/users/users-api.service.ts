@@ -33,13 +33,23 @@ export class UsersApiService {
     async updateUserInfo(user :User): Promise<User> {
         const response = await this.axiosInstance.put<User>(
             'user',
-            {name: user.name, dailyGoal: user.dailyGoal, notifyInfo: user.notifyInfo}
+            {name: user.name, dailyGoal: user.dailyGoal}
         )
         return response.data
     }
 
-    async getSubscriptionInfo(): Promise<UserSubscriptionInfo> {
-        const response = await this.axiosInstance.get<UserSubscriptionInfo>('user/subscription/key')
+    async registerWebPush(data :any): Promise<null> {
+        await this.axiosInstance.post('user/push/register', data)
+        return null
+    }
+
+    async unregisterWebPush(data :any): Promise<null> {
+        await this.axiosInstance.post('user/push/unregister', data)
+        return null
+    }
+
+    async getSubscriptionKey(): Promise<UserSubscriptionInfo> {
+        const response = await this.axiosInstance.get<UserSubscriptionInfo>('user/push/key')
         return response.data
     }
 
