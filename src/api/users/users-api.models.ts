@@ -4,6 +4,7 @@ export interface User {
     login: string
     name: string
     dailyGoal: number
+    avatar: string
 }
 
 export interface UserToken {

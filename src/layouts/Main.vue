@@ -94,12 +94,21 @@
                 </va-badge>
                 <va-navbar-item class="toolbar_item"></va-navbar-item>
 
-                <va-avatar 
-                    class="toolbar_item"
-                    color="warning"
-                    size="small" 
-                    @click="router.push({name: 'profile'})"
-                    v-if="userStore.user">{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
+                <template v-if="userStore.user">
+                    <va-avatar 
+                        class="toolbar_item"
+                        color="warning"
+                        size="small" 
+                        :src="'uploads/'+userStore.user?.avatar"
+                        @click="router.push({name: 'profile'})"
+                        v-if="userStore.user.avatar"></va-avatar>
+                    <va-avatar 
+                        class="toolbar_item"
+                        color="warning"
+                        size="small" 
+                        @click="router.push({name: 'profile'})"
+                        v-else>{{ userStore.user.name.slice(0,1).toUpperCase() }}.</va-avatar>
+                </template>
             </va-app-bar>
         </template>
 
@@ -167,6 +176,7 @@
 
     .toolbar_item {
         margin-right: 10px;
+        cursor: pointer;
     }
 
     .card-icon {

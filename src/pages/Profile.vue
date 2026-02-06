@@ -1,12 +1,12 @@
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
-
     import { axiosInstance } from '@/api/config';
     import { UsersApiService, type User } from '@/api/users';
     import { useUsersStore } from '@/stores';
 
     import { NotificationManager } from '@/lib/Notification';
     import { useToast } from 'vuestic-ui';
+    import Cropper from 'cropperjs'
     // @ts-ignore
     import AvatarCropper from "vue-avatar-cropper";
 
@@ -107,6 +107,22 @@
         }
         return Notification.permission === 'granted'
     }
+
+    const uploadAvatar = (cropper: Cropper) => {
+        cropper.getCroppedCanvas(
+            { width: 512, height: 512 }
+        ).toBlob(
+            (blob :Blob|null) => {
+                if( !!blob ){
+                    usersApiService.updateUserAvatar(blob).then( user => {
+                        userStore.setUserInfo(user)
+                    })
+                }
+            },
+            "image/jpeg"
+        )
+    }
+
 </script>
 
 <template>
@@ -116,8 +132,14 @@
             <va-card-content>
                 <va-input class="row input" label="Отображаемое имя" v-model="userName"></va-input>
                 <va-divider/>
-                <va-button disabled preset="primary" border-color="primary" @click="showCropper=true">Изменить фото</va-button>
-                <avatar-cropper v-model="showCropper" :cropper-options="{ zoomable: true }" :labels='{submit: "Ok", cancel: "Отмена"}'></avatar-cropper>
+                <va-image :src="'uploads/'+userStore.user?.avatar" v-if="userStore.user?.avatar"></va-image>
+                <va-button preset="primary" border-color="primary" @click="showCropper=true">Изменить фото</va-button>
+                <avatar-cropper v-model="showCropper" 
+                    :cropper-options="{ zoomable: false }"
+                    :output-options="{ width: 512, height: 512 }"
+                    :labels='{submit: "Ok", cancel: "Отмена"}'
+                    :upload-handler="uploadAvatar"
+                ></avatar-cropper>
             </va-card-content>
             <va-card-title><va-icon name="star" class="card-icon"/>Мои цели</va-card-title>
             <va-card-content>

@@ -25,6 +25,14 @@ export class UsersApiService {
         return response.data
     }
 
+    async updateUserAvatar(image :Blob): Promise<User>{
+        const formData = new FormData();
+        formData.append('file', image, 'avatar.jpg')
+
+        const response = await this.axiosInstance.post<User>('user/avatar', formData)
+        return response.data
+    }
+
     async getUserProgress(): Promise<UserProgress>{
         const response = await this.axiosInstance.get<UserProgress>('user/progress')
         return response.data
@@ -52,5 +60,4 @@ export class UsersApiService {
         const response = await this.axiosInstance.get<UserSubscriptionInfo>('user/push/key')
         return response.data
     }
-
 }
