@@ -37,9 +37,10 @@
         <va-card-title><va-icon name="leaderboard" class="card-icon"/>Рейтинг обучения</va-card-title>
         <va-card-content>
             <div class="va-table-responsive">
-                    <table class="va-table" width="100%">
+                    <table class="va-table va-table--striped" width="100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Имя</th>
                             <th class="va-text-right">Изучено слов</th>
                             <th class="va-text-right">% изучено</th>
@@ -47,9 +48,10 @@
                     </thead>
                     <tbody>
                         <tr v-for="item, index in ratingByProgress" :key="item.user.id">
-                        <td>{{ item.user.name }}</td>
-                        <td class="va-text-right">{{ item.progress }}</td>
-                        <td class="va-text-right">{{ Math.ceil(item.progress_pct*1000)/10 }}</td>
+                            <td><va-avatar size="small" :src="'uploads/' + item.user.avatar" v-if="item.user.avatar"></va-avatar></td>
+                            <td>{{ item.user.name }}</td>
+                            <td class="va-text-right">{{ item.progress }}</td>
+                            <td class="va-text-right">{{ Math.ceil(item.progress_pct*1000)/10 }}</td>
                         </tr>
                     </tbody>
                     </table>
@@ -61,9 +63,10 @@
         <va-card-title><va-icon name="leaderboard" class="card-icon"/>Рейтинг за неделю</va-card-title>
         <va-card-content>
             <div class="va-table-responsive">
-                    <table class="va-table" width="100%">
+                    <table class="va-table va-table--striped" width="100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Имя</th>
                             <th class="va-text-right">Правильно</th>
                             <th class="va-text-right">Всего</th>
@@ -72,10 +75,11 @@
                     </thead>
                     <tbody>
                         <tr v-for="item, index in ratingBySuccess" :key="item.user.id">
-                        <td>{{ item.user.name }}</td>
-                        <td class="va-text-right">{{ item.success }}</td>
-                        <td class="va-text-right">{{ item.success + item.failed }}</td>
-                        <td class="va-text-right"><span v-if="item.total == 0">-</span><span v-else>{{ percent(item) }}</span></td>
+                            <td><va-avatar size="small" :src="'uploads/' + item.user.avatar" v-if="item.user.avatar"></va-avatar></td>
+                            <td>{{ item.user.name }}</td>
+                            <td class="va-text-right">{{ item.success }}</td>
+                            <td class="va-text-right">{{ item.success + item.failed }}</td>
+                            <td class="va-text-right"><span v-if="item.total == 0">-</span><span v-else>{{ percent(item) }}</span></td>
                         </tr>
                     </tbody>
                     </table>
@@ -84,3 +88,9 @@
     </va-card>
 
 </template>
+
+<style scoped>
+  td {
+    vertical-align: middle; 
+  }
+</style>
