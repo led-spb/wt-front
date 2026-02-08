@@ -1,35 +1,62 @@
 <script setup lang="ts">
     import { computed, watch } from 'vue';
-    import type { Word } from '@/api/words';
+    import type { Word, Spelling } from '@/api/words';
+
+    class Letter {
+        constructor (
+            public letter: string,
+            public isMinor: boolean
+        ){}
+    }
 
     const model = defineModel<Word>();
     const emit = defineEmits(['complete']);
 
-    const letters = computed(() => {
-        if( !model.value ) return
+    function* partsGeneratior(data :Word): Generator<Letter|Spelling> {
+        const word = data.fullword
+        let position = 0, currentPartStart = 0;
+        let minorFlag = true
 
-        const word = model.value?.fullword;
-        const result = new Array();
-        let position = 0;
-
-        const spellings = [...(model.value.spellings || [])].sort(
-            (a: any, b: any) => {return a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)}
+        const spellings = [...(data.spellings || [])].sort(
+            (a: Spelling, b: Spelling) => a.position-b.position == 0 ? (a.length-b.length) : (a.position - b.position)
         )
 
-        for(const [index, spelling] of spellings.entries()){
-            const letters = word.substr(position, spelling.position - position)
-            position = spelling.position + spelling.length
-            if(letters != ""){
-                result.push( letters )
+        for( const spelling of spellings){
+            while(position < word.length){
+                if(position == spelling.position){
+                    yield new Letter(word.substring(currentPartStart, position), false)
+                    yield spelling
+                    currentPartStart = spelling.position+spelling.length
+                    position = currentPartStart
+                    minorFlag = false
+                    break
+
+                }else if( word.charAt(position) == ' ' ){
+                    yield new Letter(word.substring(currentPartStart, position+1), minorFlag)
+                    minorFlag = true
+                    position++
+                    currentPartStart = position
+                }else {
+                    position++
+                }
             }
-            spelling.variants?.sort(() => Math.random()-0.5)
-            spelling.index = index
-            result.push(spelling)
         }
-        if( word.substr(position) != ""){
-            result.push(word.substr(position));
+        while(position < word.length){
+            if( word.charAt(position) == ' ' ){
+                yield new Letter(word.substring(currentPartStart, position+1), minorFlag)
+                minorFlag = true
+                position++
+                currentPartStart = position
+            }else {
+                position++
+            }
         }
-        return result;
+        yield new Letter(word.substring(currentPartStart), minorFlag)
+    }
+
+    const letters = computed(() => {
+        if( !model.value ) return
+        return [...partsGeneratior(model.value)]
     });
 
     const isDone = computed(() =>{
@@ -62,8 +89,8 @@
         if( !model.value ) return
         const result = [];
         for (const letter of letters.value || []) {
-            if( typeof(letter) == 'string' ){
-                result.push(letter)
+            if( letter instanceof Letter ){
+                result.push(letter.letter)
             }else{
                 result.push(letter.selected)
             }
@@ -110,9 +137,9 @@
         <div class="row justify-center">
         <div class="word-block">
             <template v-if="isComplete">
-                <template v-for="item in letters">
-                    <template v-if="typeof item == 'string'">
-                        <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
+                <template v-for="item, index in letters">
+                    <template v-if="item instanceof Letter">
+                        <h2 class="letter" :class="item.isMinor && char != ' '? 'minor':''" v-for="char in item.letter">{{ encodeSpaces(char) }}</h2>
                     </template>
                     <template v-else>
                         <div class="spelling spelling-ok" v-if="isSpellingOk(item)">
@@ -128,12 +155,10 @@
             </template>
 
             <template v-else>
-
-                <template v-for="item in letters">
-                    <template v-if="typeof item == 'string'">
-                        <h2 class="letter" v-for="s in item">{{ encodeSpaces(s) }}</h2>
+                <template v-for="item, index in letters">
+                    <template v-if="item instanceof Letter">
+                        <h2 class="letter" :class="item.isMinor && char != ' ' ? 'minor':''" v-for="char in item.letter">{{ encodeSpaces(char) }}</h2>
                     </template>
-
                     <template v-else>
                         <div v-if='typeof item.selected !== "undefined"'>
                             <h2 class="letter">{{ encodeSpaces(item.selected) }}</h2>
@@ -147,8 +172,8 @@
         </div>
         </div>
         <div style="min-height: 1vh;"></div>
-        <div class="row justify-space-evenly" v-if="currentSpelling">
-            <va-button v-for="variant in currentSpelling.variants" @click="currentSpelling.selected = mapVariant(variant)">{{ variant }}</va-button>
+        <div class="row justify-space-evenly" v-if="currentSpelling && currentSpelling.variants">
+            <va-button v-for="variant in currentSpelling?.variants" @click="currentSpelling.selected = mapVariant(variant)">{{ variant }}</va-button>
         </div>
     </div>
 </template>
@@ -205,5 +230,10 @@
         justify-content: center;
         opacity: 1;
         transform: translateY(-60%);
+    }
+
+    .minor {
+        font-size: 16px;
+        letter-spacing: normal;
     }
 </style>

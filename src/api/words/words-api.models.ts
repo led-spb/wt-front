@@ -2,7 +2,6 @@ export type Accent = number
 
 export interface Spelling {
     id: number
-    index: number
     position: number
     length: number
     variants: string[]
