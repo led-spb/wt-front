@@ -52,7 +52,9 @@
     }
 
     onMounted(() => {
-        wordsStore.setWords([])
+        if( !wordsStore.currentWord?.accents ){
+            wordsStore.setWords([])
+        }
     })
 </script>
 

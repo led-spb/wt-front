@@ -58,7 +58,9 @@
     }
 
     onMounted(() => {
-        wordsStore.setWords([])
+        if( !wordsStore.currentWord?.spellings ){
+            wordsStore.setWords([])
+        }
     })
 </script>
 
