@@ -22,7 +22,7 @@
         )
 
         for( const spelling of spellings){
-            while(position < word.length){
+            while(position <= word.length){
                 if(position == spelling.position){
                     yield new Letter(word.substring(currentPartStart, position), false)
                     yield spelling
