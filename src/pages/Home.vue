@@ -65,17 +65,17 @@
             <va-card-title><va-icon name="tour" class="card-icon"/>Топ ошибок</va-card-title>
             <va-card-content>
                 <div class="va-table-responsive">
-                        <table class="va-table" width="100%">
+                        <table class="va-table va-table--striped" width="100%">
                         <thead>
                             <tr>
                             <th>Слово</th>
-                            <th>Ошибок</th>
+                            <th class="va-text-right">Ошибок</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in topFailed" :key="item.word.id">
                             <td><word :value="item.word"/></td>
-                            <td>{{ item.failed }}</td>
+                            <td class="va-text-right">{{ item.failed }}</td>
                             </tr>
                         </tbody>
                         </table>

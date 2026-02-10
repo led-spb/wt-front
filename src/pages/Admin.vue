@@ -32,13 +32,14 @@
 
 <template>
     <va-card>
+        <va-form>
         <va-card-title>admin</va-card-title>
         <va-card-content>
             <va-input label="слово/id" class="row" v-model="searchValue"></va-input>
         </va-card-content>
 
         <va-card-content>
-            <div class="row justify-center"><va-button @click="findWord">Найти</va-button></div>
+            <div class="row justify-center"><va-button @click="findWord" type="submit">Найти</va-button></div>
         </va-card-content>
 
         <va-divider />
@@ -46,5 +47,6 @@
         <va-card-content><div class="row justify-center"><p><word :value="word"/></p></div></va-card-content>
         <va-card-content><div class="row justify-center"><spelling-exam v-model="word" v-if="word?.spellings?.length"/></div></va-card-content>
         <va-card-content><div class="row justify-center"><accent-exam  v-model="word" v-if="word?.accents?.length"/></div></va-card-content>
+        </va-form>
     </va-card>
 </template>

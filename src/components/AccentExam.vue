@@ -53,7 +53,7 @@
     }
     .letter {
         padding: 0 2px;
-        font-size: 40px;
+        font-size: 30px;
         transform: padding .25s;
     }
     .variant {

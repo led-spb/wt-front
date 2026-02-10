@@ -42,8 +42,17 @@
 
 
 <template>
-    <va-modal :model-value="true" size="auto" withoutTransitions okText="Login" v-on:ok="onLogin()" v-on:cancel="router.back()">
-        <va-input label="Логин" v-model="form.login" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
-        <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
+    <va-modal :model-value="true" size="auto" withoutTransitions :hideDefaultActions="true">
+        <template v-slot:default>
+            <va-form>
+            <va-input label="Логин" v-model="form.login" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
+            <va-input label="Пароль" v-model="form.password" type="password" class="row" :rules="[(v) => Boolean(v) || 'Поле обязательно для заполнения']"/>
+            <va-button style="display: none" @click="onLogin()" type="submit"></va-button>
+            </va-form>
+        </template>
+        <template v-slot:footer>
+            <va-button class="mr-4" preset="secondary" @click="router.back()">Cancel</va-button>
+            <va-button @click="onLogin()">Login</va-button>
+        </template>
     </va-modal>
 </template>

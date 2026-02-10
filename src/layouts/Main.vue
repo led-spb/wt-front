@@ -52,7 +52,6 @@
     })
 
     onMounted(() => {
-        // console.log('Register axis intercepters');        
         axiosInstance.interceptors.response.use(
             (response) => response,
             (error) => {
@@ -156,10 +155,10 @@
 <style scoped>
     .container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: wrap;
 
-        justify-content: space-evenly;
+        /* justify-content: space-evenly; */
         align-items: stretch;
         align-content: center;
 
@@ -169,9 +168,18 @@
 
 
 <style lang="scss">
-    .item {
-        min-width: 360px;
-        max-width: 576px;
+    @media all and (max-width: 576px) {
+        .item {
+            min-width: 380px;
+            max-width: 380px;
+        }
+    }
+
+    @media (min-width: 625px) {
+        .item {
+            min-width: 600px;
+            max-width: 600px;
+        }
     }
 
     .toolbar_item {
@@ -191,5 +199,4 @@
             border-radius: 0;
         }
     }
-
 </style>

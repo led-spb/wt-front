@@ -50,6 +50,10 @@ const router = createRouter({
                     component: () => import('@/pages/Rules.vue'),
                     meta: { requiresAuth: true },
                 },
+                {   path: 'analytics', name: 'analytics',
+                    component: () => import('@/pages/Analytics.vue'),
+                    meta: { requiresAuth: true },
+                },
             ]
         },
         {

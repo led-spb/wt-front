@@ -20,12 +20,18 @@ export class StatisticsApiService {
     }
     
     async getUserTrobles(): Promise<UserWordStatistics[]>{
-        const response = await this.axiosInstance.get<UserWordStatistics[]>('user/troubles')
+        const response = await this.axiosInstance.get<UserWordStatistics[]>('user/stat/words')
         return response.data
     }
 
     async updateUserStat(data :UpdateUserStat): Promise<null>{
         await this.axiosInstance.put('user/stat', data )
         return null
+    }
+
+    async getTagsStat(): Promise<any> {
+        const response = await this.axiosInstance.get('user/stat/tags')
+
+        return response.data
     }
 }

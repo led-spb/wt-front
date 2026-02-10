@@ -132,8 +132,8 @@
             <va-card-content>
                 <va-input class="row input" label="Отображаемое имя" v-model="userName"></va-input>
                 <va-divider/>
-                <va-image :src="'uploads/'+userStore.user?.avatar" v-if="userStore.user?.avatar"></va-image>
-                <va-button preset="primary" border-color="primary" @click="showCropper=true">Изменить фото</va-button>
+                <va-image class="mx-auto" :src="'uploads/'+userStore.user?.avatar" v-if="userStore.user?.avatar" :max-width="326"></va-image>
+                <va-button class="mt-5" preset="primary" size="small" border-color="primary" @click="showCropper=true">Изменить фото</va-button>
                 <avatar-cropper v-model="showCropper" 
                     :cropper-options="{ zoomable: false }"
                     :output-options="{ width: 512, height: 512 }"
