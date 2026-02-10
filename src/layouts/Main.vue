@@ -182,6 +182,10 @@
         }
     }
 
+    html {
+        font-size: 11pt;
+    }
+
     .toolbar_item {
         margin-right: 10px;
         cursor: pointer;

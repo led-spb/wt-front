@@ -18,27 +18,33 @@
 </script>
 
 <template>
-    <va-card class="item" v-for="info in tagsStatistcs">
+    <template v-for="info in tagsStatistcs">
+    <va-card class="item" v-if="info.prev && info.prev.total != info.total">
         <va-card-title>{{ info.tag.title }}</va-card-title>
         <va-card-content>
             <va-list class="stat">
                 <va-list-item>
                     <va-list-item-section>Попыток</va-list-item-section>
                     <va-list-item-section icon>{{ info.total }}</va-list-item-section>
+                    <va-list-item-section icon>+{{ info.total - info.prev.total }}</va-list-item-section>
                 </va-list-item>
                 <va-list-item>
                     <va-list-item-section>Правильно</va-list-item-section>
                     <va-list-item-section icon>{{ info.total-info.failed }}</va-list-item-section>
+                    <va-list-item-section icon>+{{ info.total - info.failed - info.prev.total + info.prev.failed }}</va-list-item-section>
                 </va-list-item>
                 <va-list-item>
                     <va-list-item-section>Ошибок</va-list-item-section>
                     <va-list-item-section icon>{{ info.failed }}</va-list-item-section>
+                    <va-list-item-section icon>+{{ info.failed - info.prev.failed }}</va-list-item-section>
                 </va-list-item>
                 <va-list-item>
                     <va-list-item-section>Процент</va-list-item-section>
                     <va-list-item-section icon>{{ percent(info.total-info.failed, info.total) }}%</va-list-item-section>
+                    <va-list-item-section icon>{{ percent(info.total-info.failed, info.total)-percent(info.prev.total-info.prev.failed, info.prev.total) }}%</va-list-item-section>
                 </va-list-item>
             </va-list>
         </va-card-content>
     </va-card>
+    </template>
 </template>
